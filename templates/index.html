@@ -1,1 +1,24 @@
 TESTING SITE
+
+
+<br>
+<table>
+    <tr>
+    <th>Firstname</th>
+    <th>Lastname</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>User Type</th>
+    </tr>
+{% for i in account_list %}
+    <tr>
+        <td>{{ i.0 }}</td>
+    <td>{{ i.1 }}</td>
+    <td>{{ i.2 }}</td>
+    <td>{{ i.3 }}</td>
+    <td>{{ i.4 }}</td>
+    <td>{{ i.5 }}</td>
+    </tr>
+{% endfor %}
+ </table>
