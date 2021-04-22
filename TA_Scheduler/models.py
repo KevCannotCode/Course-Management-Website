@@ -11,3 +11,10 @@ class myAccount(models.Model):
     userType = models.CharField(max_length=20)
     password = models.CharField(max_length=40)
 
+class myCourses( models.Models):
+    courseName = models.CharField(max_length=30)
+    courseNumber = models.CharField(max_length=30)
+
+class myLab( models.Models):
+    courseName = models.CharField(max_length=30)
+    courseNumber = models.CharField(max_length=30)
