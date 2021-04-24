@@ -28,7 +28,7 @@ class myLogin():
                     errorMessage = "Incorrect Password!"
 
         except myAccount.DoesNotExist:
-            errorMessage = "User doesn't exist"
+            errorMessage = "User Doesn't Exist"
         except myAccount.MultipleObjectsReturned:
             errorMessage = "Duplicate User Found In Database!"
         finally:
