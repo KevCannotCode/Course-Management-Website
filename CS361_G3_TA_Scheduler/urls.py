@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from TA_Scheduler.views import Login
+from TA_Scheduler.views import Logout
 from TA_Scheduler.views import Home
 from TA_Scheduler.views import CreateAccount
 from TA_Scheduler.views import CreateCourse
 from TA_Scheduler.views import CreateLab
+from TA_Scheduler.views import Profile
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +30,6 @@ urlpatterns = [
     path('create-account/', CreateAccount.as_view()),
     path('create-course/', CreateCourse.as_view()),
     path('create-lab/', CreateLab.as_view()),
+    path('logout/', Logout.as_view()),
+    path('profile/', Profile.as_view())
 ]

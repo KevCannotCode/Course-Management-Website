@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>TA Scheduler - Create Course</title>
+    <title>TA Scheduler - Create Account</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -23,18 +23,6 @@
     <!-- Custom styles for this page -->
     <link href="{% static '/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
-    <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
-    {% if errorMessage == "" %}
-
-        {% else %}
-            <script type="text/javascript">
-                $(document).ready(function(){
-                $('#errorModal').modal('show');
-                 });
-            </script>
-    {% endif %}
 </head>
 
 <body id="page-top">
@@ -77,14 +65,14 @@
 					<i class="fas fa-user-circle"></i>
                     <span>Create Account</span></a>
             </li>
-			
+
 			<!-- Nav Item - Course Creation -->
-			<li class="nav-item active">
+			<li class="nav-item">
                 <a class="nav-link" href="/create-course">
 					<i class="fas fa-book-open"></i>
                     <span>Create Course</span></a>
             </li>
-			
+
 			<!-- Nav Item - Section Creation -->
 			<li class="nav-item">
                 <a class="nav-link" href="/create-lab">
@@ -95,10 +83,10 @@
             <!-- Divider
             <hr class="sidebar-divider">
  -->
-         
 
 
-            <!-- Divider 
+
+            <!-- Divider
             <hr class="sidebar-divider d-none d-md-block">
 -->
             <!-- Sidebar Toggler (Sidebar) -->
@@ -154,12 +142,12 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Create Course</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Profile</h1>
 
                 </div>
                 <!-- /.container-fluid -->
-				
-				
+
+
 				        <div class="card o-hidden border-0 shadow-lg my-5">
             <div class="card-body p-0">
                 <!-- Nested Row within Card Body -->
@@ -168,34 +156,33 @@
                     <div class="col-lg-5">
                         <div class="p-5">
                             <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Create a Course!</h1>
+                                <h1 class="h4 text-gray-900 mb-4">Update Your Profile!</h1>
                             </div>
-                            <form class="user" action="/create-course/" method="post">
-                                {% csrf_token %}
+                            <form class="user">
+
                                 <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input required="true" type="text" class="form-control" name="courseNumber"
-                                            placeholder="Course Number">
+									<div class="col-sm-6  mb-3 mb-sm-0">
+                                        <input type="text" class="form-control" name="userName"
+                                            placeholder="Username">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input required="true" type="text" class="form-control" name="courseName"
-                                            placeholder="Course Name">
+										<input data-toggle="password" name="password" class="form-control" type="password" maxlength="10" placeholder="Password">
                                     </div>
                                 </div>
                                 <!--
                                 <div class="form-group row">
-
-									<div class="col-sm-6 mb-3 mb-sm-0">
-											<label class="control-label" for="date">Start Date</label>
-											<input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
-									</div>
-									<div class="col-sm-6">
-											<label class="control-label" for="date">End Date</label>
-											<input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
-									</div>
-                                </div>
-                                -->
-                                <button type="submit" class="btn btn-primary btn-user btn-block">Create Course</button>
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+									 <label for="exampleFormControlSelect1">User Type</label>
+										<select class="form-control" id="exampleFormControlSelect1">
+											<option>Administrator</option>
+											<option>Instructor</option>
+											<option>TA</option>
+										</select>
+                                    </div>
+                                </div> -->
+                                <a href="#" class="btn btn-primary btn-user btn-block">
+                                    Create Account
+                                </a>
                             </form>
                         <!--    <hr>
                             <div class="text-center">
@@ -211,32 +198,6 @@
             </div>
                         </div>
 
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Courses</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="courseData" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-											<th>Course Number</th>
-                                            <th>Course Name</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                    {% for i in course_list %}
-                                        <tr>
-                                            <td>{{ i.0 }}</td>
-                                            <td>{{ i.1 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
 
             </div>
             <!-- End of Main Content -->
@@ -282,36 +243,17 @@
         </div>
     </div>
 
-        <!-- Error Modal-->
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Error! Try again!</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">{{ errorMessage }}</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Bootstrap core JavaScript-->
     <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
+	<!-- Show Password -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+
     <!-- Core plugin JavaScript-->
     <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
-
-	
     <!-- Page level plugins -->
     <script src="{% static '/vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static '/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
@@ -321,8 +263,6 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static '/js/demo/datatables-demo.js' %}"></script>
-
-
 
 </body>
 

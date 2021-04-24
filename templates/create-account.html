@@ -20,6 +20,8 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static '/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this page -->
+    <link href="{% static '/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
 </head>
 
@@ -114,7 +116,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Username</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ userName }}</span>
                                 <img class="img-profile rounded-circle"
                                     src="{% static '/img/undraw_profile.svg' %}">
                             </a>
@@ -160,11 +162,11 @@
 
                                 <div class="form-group row">
 									<div class="col-sm-6  mb-3 mb-sm-0">
-                                        <input type="text" class="form-control" id="exampleUserName"
+                                        <input type="text" class="form-control" name="userName"
                                             placeholder="Username">
                                     </div>
                                     <div class="col-sm-6">
-										<input data-toggle="password" id="exampleInputPassword" class="form-control" type="password" maxlength="10" placeholder="Password">
+										<input data-toggle="password" name="password" class="form-control" type="password" maxlength="10" placeholder="Password">
                                     </div>
                                 </div>
                                 <!--
@@ -194,7 +196,34 @@
                     </div>
                 </div>
             </div>
-        </div>
+                        </div>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Accounts</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="accountData" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Password</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for i in account_list %}
+                                        <tr>
+                                            <td>{{ i.0 }}</td>
+                                            <td>{{ i.1 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
 
             </div>
             <!-- End of Main Content -->
@@ -234,7 +263,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/">Logout</a>
+                    <a class="btn btn-primary" href="/logout/">Logout</a>
                 </div>
             </div>
         </div>
@@ -251,8 +280,15 @@
     <!-- Core plugin JavaScript-->
     <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
+    <!-- Page level plugins -->
+    <script src="{% static '/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static '/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
     <!-- Custom scripts for all pages-->
     <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static '/js/demo/datatables-demo.js' %}"></script>
 
 </body>
 

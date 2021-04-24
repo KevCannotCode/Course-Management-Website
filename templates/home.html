@@ -187,8 +187,8 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of Sections</div>
-											 <div class="h5 mb-0 font-weight-bold text-gray-800" id="sectionDataCount"></div>
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of Labs</div>
+											 <div class="h5 mb-0 font-weight-bold text-gray-800" id="labDataCount"></div>
                                         </div>
                                         <div class="col-auto">
 											<i class="fas fa-book-reader fa-2x text-gray-300"></i>
@@ -256,66 +256,25 @@
 					
 					<div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Sections</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Labs</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="sectionData" width="100%" cellspacing="0">
-                                                                        <thead>
+                                <table class="table table-bordered" id="labData" width="100%" cellspacing="0">
+                                    <thead>
                                         <tr>
-                                            <th>Course Name</th>
-											<th>Course Number</th>
-											<th>Course Instructor</th>
-											<th>Section Number</th>
-											<th>Section Days</th>
-											<th>Section Times</th>
+											<th>Lab Number</th>
+                                            <th>Lab Name</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
+                                    {% for i in lab_list %}
                                         <tr>
-                                            <td>COMPSCI</td>
-											<td>361</td>
-											<td>J. Rock</td>
-											<td>201</td>
-											<td>T,TH</td>
-											<td>10:00AM - 10:50AM</td>
-										</tr>
-										<td>COMPSCI</td>
-											<td>315</td>
-											<td>P. McNally</td>
-											<td>201</td>
-											<td>M,W</td>
-											<td>1:00PM - 1:50PM</td>
-										</tr>
-										<td>COMPSCI</td>
-											<td>315</td>
-											<td>P. McNally</td>
-											<td>202</td>
-											<td>T,TH</td>
-											<td>1:00PM - 1:50PM</td>
-										</tr>
-										<td>COMPSCI</td>
-											<td>317</td>
-											<td>R. Mandal</td>
-											<td>201</td>
-											<td>ASYNC</td>
-											<td>ASYNC</td>
-										</tr>
-										<td>COMPSCI</td>
-											<td>317</td>
-											<td>R. Mandal</td>
-											<td>202</td>
-											<td>ASYNC</td>
-											<td>ASYNC</td>
-										</tr>
-										<td>MATH</td>
-											<td>205</td>
-											<td>B. Hospital</td>
-											<td>201</td>
-											<td>M,W</td>
-											<td>9:45AM - 11:00AM</td>
-										</tr>
+                                            <td>{{ i.0 }}</td>
+                                            <td>{{ i.1 }}</td>
+                                        </tr>
+                                    {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -363,8 +322,9 @@
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
+
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/">Logout</a>
+                    <a class="btn btn-primary" href="/logout/">Logout</a>
                 </div>
             </div>
         </div>
