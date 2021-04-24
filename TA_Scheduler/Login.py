@@ -1,7 +1,7 @@
 from .models import myAccount
 
 class Login():
-    def login(self, username, password):
+    def login(username, password):
         # query the username as a pk
         errorMessage = ""
         try:
