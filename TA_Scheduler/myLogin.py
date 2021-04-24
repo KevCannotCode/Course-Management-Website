@@ -1,27 +1,32 @@
 from .models import myAccount
 
+
 class myLogin():
     def login(username, password):
         # query the username as a pk
         errorMessage = ""
         try:
-            #checking for long inputs
+            # checking for long inputs
             if len(username) > 40:
                 errorMessage = "The username is too long"
-            elif  len(password) > 40 :
+                return errorMessage
+            elif len(password) > 40:
                 errorMessage = "The password is too long"
-            #checking for empty inputs
-            elif  len(username) < 1:
+                return errorMessage
+            # checking for empty inputs
+            elif len(username) < 1:
                 errorMessage = "The username is empty"
-            elif  len(password) < 1:
+                return errorMessage
+            elif len(password) < 1:
                 errorMessage = "The password is empty"
-            #check if the username is non existant
+                return errorMessage
+            # check if the username is non existant
             if errorMessage != "":
-                entry = myAccount.objects.get(userName = username)
-            #check if the password matches the username
-            elif ( entry.password != password):
-                errorMessage = "The password does not match this username"
-                
+                entry = myAccount.objects.get(userName=username)
+            # check if the password matches the username
+                if (entry.password != password):
+                    errorMessage = "The password does not match this username"
+
         except myAccount.DoesNotExist:
             errorMessage = "The username was not found in the database"
         except myAccount.MultipleObjectsReturned:
