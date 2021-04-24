@@ -3,14 +3,14 @@ from .models import myAccount
 class Login():
     def login(self, username, password):
         # query the username as a pk
-        logged = True
+        errorMessage = ""
         try:
             entry = myAccount.objects.get(username = username)
             if( entry.password is not password):
                 logged = False
         except myAccount.DoesNotExist:
-            logged = False
+            errorMessage = "The username was not found in the database"
         except myAccount.MultipleObjectsReturned:
-            logged = False
+            errorMessage = "There was a duplicate of the username in the database"
         finally:
-            return logged
+            return errorMessage
