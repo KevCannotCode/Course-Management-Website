@@ -8,17 +8,18 @@ class myLogin():
             #checking for long inputs
             if len(username) > 40:
                 errorMessage = "The username is too long"
-            if len(password) > 40 :
+            else if  len(password) > 40 :
                 errorMessage = "The password is too long"
             #checking for empty inputs
-            if len(username) < 1:
+            else if  len(username) < 1:
                 errorMessage = "The username is empty"
-            if len(password) < 1:
+            else if  len(password) < 1:
                 errorMessage = "The password is empty"
             #check if the username is non existant
-            entry = myAccount.objects.get(userName = username)
+            if errorMessage != "":
+                entry = myAccount.objects.get(userName = username)
             #check if the password matches the username
-            if( entry.password != password):
+            else if ( entry.password != password):
                 errorMessage = "The password does not match this username"
                 
         except myAccount.DoesNotExist:
