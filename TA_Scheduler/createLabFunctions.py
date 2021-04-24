@@ -1,4 +1,4 @@
-from .models import myCourse
+from .models import myLab
 
 class createLabFunctions():
     def createLab(labNumber, labName):
