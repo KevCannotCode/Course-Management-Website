@@ -4,6 +4,7 @@ from .models import myAccount
 from .models import myCourse
 from .models import myLab
 from .createCourseFunctions import createCourseFunctions
+from .myLogin import myLogin
 from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
@@ -18,24 +19,11 @@ class Login(View):
         return render(request,"index.html",{})
 
     def post(self,request):
-        noSuchUser = False
-        badPassword = False
-        if(request.POST['userName'] == ""):
-            if(request.POST['password'] == ""):
-                return render(request, "index.html", {"errorMessage": "No Username or Password Provided!"})
-            return render(request, "index.html", {"errorMessage": "No Username Provided!"})
-        if (request.POST['password'] == ""):
-            return render(request, "index.html", {"errorMessage": "No Password Provided!"})
-        try:
-            m = myAccount.objects.get(userName=request.POST['userName'])
-            badPassword = (m.password != request.POST['password'])
-        except:
-            noSuchUser = True
-        if noSuchUser:
-            return render(request, "index.html", {"errorMessage": "User doesn't exist"})
-        elif badPassword:
-            return render(request,"index.html",{"errorMessage":"Incorrect Password!"})
+        errorMessage = myLogin.login(request.POST['userName'], request.POST['password'])
+        if(errorMessage != ""):
+            return render(request, "index.html", {"errorMessage": errorMessage})
         else:
+            m = myAccount.objects.get(userName=request.POST['userName'])
             request.session["userName"] = m.userName
             return redirect("/home/")
 

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test import Client
 from .models import myAccount
-from TA_Scheduler.Login import Login
+from TA_Scheduler.myLogin import Login
 from .createCourseFunctions import createCourseFunctions
 # Create your tests here.
 

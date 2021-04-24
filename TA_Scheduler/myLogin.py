@@ -1,6 +1,6 @@
 from .models import myAccount
 
-class Login():
+class myLogin():
     def login(username, password):
         # query the username as a pk
         errorMessage = ""
@@ -16,9 +16,9 @@ class Login():
             if len(password) < 1:
                 errorMessage = "The password is empty"
             #check if the username is non existant
-            entry = myAccount.objects.get(username = username)
+            entry = myAccount.objects.get(userName = username)
             #check if the password matches the username
-            if( entry.password is not password):
+            if( entry.password != password):
                 errorMessage = "The password does not match this username"
                 
         except myAccount.DoesNotExist:
