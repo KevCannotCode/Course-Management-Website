@@ -8,28 +8,28 @@ class myLogin():
         try:
             # checking for long inputs
             if len(username) > 40:
-                errorMessage = "The username is too long"
+                errorMessage = "The Username Is Too Long!"
                 return errorMessage
             elif len(password) > 40:
-                errorMessage = "The password is too long"
+                errorMessage = "The Password Is Too Long!"
                 return errorMessage
             # checking for empty inputs
             elif len(username) < 1:
-                errorMessage = "The username is empty"
+                errorMessage = "No Username Provided!"
                 return errorMessage
             elif len(password) < 1:
-                errorMessage = "The password is empty"
+                errorMessage = "No Password Provided!"
                 return errorMessage
             # check if the username is non existant
-            if errorMessage != "":
+            if errorMessage == "":
                 entry = myAccount.objects.get(userName=username)
             # check if the password matches the username
-                if (entry.password != password):
-                    errorMessage = "The password does not match this username"
+                if entry.password != password:
+                    errorMessage = "Incorrect Password!"
 
         except myAccount.DoesNotExist:
-            errorMessage = "The username was not found in the database"
+            errorMessage = "User doesn't exist"
         except myAccount.MultipleObjectsReturned:
-            errorMessage = "There was a duplicate of the username in the database"
+            errorMessage = "Duplicate User Found In Database!"
         finally:
             return errorMessage
