@@ -5,13 +5,13 @@ class createLabFunctions:
     def createLab(labNumber, labName):
         errorMessage = ""
         if labNumber == "" and labName == "":
-            errorMessage = "Lab name and number are empty"
+            errorMessage = "No Lab Number or Lab Name Provided!"
             return errorMessage
         elif labNumber == "":
-            errorMessage = "Lab number is empty"
+            errorMessage = "No Lab Number Provided!"
             return errorMessage
         elif labName == "":
-            errorMessage = "Lab name is empty"
+            errorMessage = "No Lab Name Provided!"
             return errorMessage
 
         if len(labNumber) > 10:
@@ -19,13 +19,13 @@ class createLabFunctions:
             return errorMessage
 
         if not (labNumber.isnumeric()):
-            errorMessage = "Lab Number Isn't Numeric"
+            errorMessage = "Lab Number Isn't Numeric!"
             return errorMessage
 
         existingLab = list(myLab.objects.filter(labNumber=labNumber))
 
         if len(existingLab) != 0:
-            errorMessage = "Lab Number Already Exists"
+            errorMessage = "Lab Number Already Exists!"
             return errorMessage
 
         if len(labName) > 20:
