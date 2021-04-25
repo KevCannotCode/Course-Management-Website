@@ -35,8 +35,8 @@ class CreateNewAccount(TestCase):
 
     def test_unitTest_duplicateAccount(self):
         errorMessage = createAccountFunctions.createAccount("flynnk", "randomPassword")
-        self.assertEqual("An account with this userName already exits", errorMessage, "createAccount failed to produce error when trying to create a duplicate account, username: flynnk password: randomPassword")
+        self.assertEqual("Username Already Exists!", errorMessage, "createAccount failed to produce error when trying to create a duplicate account, username: flynnk password: randomPassword")
 
     def test_unitTest_invalidAccountInput(self):
         errorMessage = createAccountFunctions.createAccount("", "randomPassword")
-        self.assertEqual("Blank userName", errorMessage, "createAccount failed to produce error message with invalid inputs, username:  password: randomPassword")
+        self.assertEqual("No Username Provided!", errorMessage, "createAccount failed to produce error message with invalid inputs, username:  password: randomPassword")
