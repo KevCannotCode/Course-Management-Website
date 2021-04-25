@@ -7,12 +7,16 @@ class createAccountFunctions():
         #check size of inputted username and password
         if userName == "":
             errorMessage = "Blank userName"
+            return errorMessage
         elif len(userName) > 40:
             errorMessage = "UserName too long"
+            return errorMessage
         elif password == "":
             errorMessage = "Blank password"
+            return errorMessage
         elif len(password) > 40:
             errorMessage = "Paswword too long"
+            return errorMessage
         else:
             existingAccounts = list(myAccount.objects.filter(userName=userName))
 
