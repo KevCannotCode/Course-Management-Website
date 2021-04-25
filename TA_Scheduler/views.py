@@ -3,6 +3,7 @@ from django.views import View
 from .models import myAccount
 from .models import myCourse
 from .models import myLab
+from .models import myContact
 from .createCourseFunctions import createCourseFunctions
 from .myLogin import myLogin
 from django.contrib.auth import logout as auth_logout
@@ -75,8 +76,20 @@ class Profile(View):
     def get(self,request):
         userName = request.session["userName"]
 
-        account_list = list(myAccount.objects.values_list("userName", "password"))
-        course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
-        lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        if(len(list(myContact.objects.filter(userName=userName))) == 0):
+            myContact.objects.create(userName=userName, phoneNumber="NOT SET", emailAddress="NOT SET")
 
-        return render(request, "profile.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName})
+        contact = list(myContact.objects.filter(userName=userName))[0]
+        return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})
+
+    def post(self,request):
+        userName = request.session["userName"]
+
+        if(len(list(myContact.objects.filter(userName=userName))) == 0):
+            myContact.objects.create(userName=userName, phoneNumber="NOT SET", emailAddress="NOT SET")
+
+        contact = list(myContact.objects.filter(userName=userName))[0]
+        contact.phoneNumber = request.POST["phoneNumber"]
+        contact.emailAddress = request.POST["emailAddress"]
+        contact.save()
+        return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})

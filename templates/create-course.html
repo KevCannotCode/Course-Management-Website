@@ -92,15 +92,11 @@
                     <span>Create Lab</span></a>
             </li>
 
-            <!-- Divider
-            <hr class="sidebar-divider">
- -->
          
 
 
-            <!-- Divider 
+
             <hr class="sidebar-divider d-none d-md-block">
--->
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -135,7 +131,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="/profile/">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -151,11 +147,11 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
+             <div class="container-fluid">
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Create Course</h1>
-
                 </div>
                 <!-- /.container-fluid -->
 				
@@ -174,11 +170,11 @@
                                 {% csrf_token %}
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input required="true" type="text" class="form-control" name="courseNumber"
+                                        <input required="true" maxlength="10" type="text" class="form-control" name="courseNumber"
                                             placeholder="Course Number">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input required="true" type="text" class="form-control" name="courseName"
+                                        <input required="true" maxlength="20" type="text" class="form-control" name="courseName"
                                             placeholder="Course Name">
                                     </div>
                                 </div>
@@ -195,7 +191,7 @@
 									</div>
                                 </div>
                                 -->
-                                <button type="submit" class="btn btn-primary btn-user btn-block">Create Course</button>
+                                <button type="submit" class="btn btn-success btn-user btn-block">Create Course</button>
                             </form>
                         <!--    <hr>
                             <div class="text-center">
@@ -213,7 +209,7 @@
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Courses</h6>
+                            <h6 class="m-0 font-weight-bold text-success">Courses</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -238,6 +234,7 @@
                         </div>
                     </div>
 
+            </div>
             </div>
             <!-- End of Main Content -->
 

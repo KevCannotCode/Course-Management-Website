@@ -15,8 +15,9 @@ class myLab(models.Model):
     labNumber = models.IntegerField()
 
 class myContact(models.Model):
+    userName = models.CharField(max_length=40)
     phoneNumber = models.CharField(max_length=20)
-    emailAddress = models.CharField(max_length=20)
+    emailAddress = models.CharField(max_length=40)
 
 class myCourseInstructors(models.Model):
     courseNumber = models.IntegerField()
