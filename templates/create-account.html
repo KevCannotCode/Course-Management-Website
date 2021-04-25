@@ -22,7 +22,18 @@
     <link href="{% static '/css/sb-admin-2.min.css' %}" rel="stylesheet">
     <!-- Custom styles for this page -->
     <link href="{% static '/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
+    {% if errorMessage == "" %}
+
+    {% else %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#errorModal').modal('show');
+            });
+        </script>
+    {% endif %}
 </head>
 
 <body id="page-top">
@@ -151,8 +162,8 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                                     </div>
-                                    <form class="user">
-
+                                    <form class="user" action="/create-account/" method="post">
+                                        {% csrf_token %}
                                         <div class="form-group row">
                                             <div class="col-sm-6  mb-3 mb-sm-0">
                                                 <input type="text" class="form-control" name="userName"
@@ -160,13 +171,10 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <input data-toggle="password" name="password" class="form-control"
-                                                       type="password" maxlength="10" placeholder="Password">
+                                                       type="password"  placeholder="Password">
                                             </div>
                                         </div>
-
-                                        <a href="#" class="btn btn-danger btn-user btn-block">
-                                            Create Account
-                                        </a>
+                                        <button type="submit" class="btn btn-danger btn-user btn-block">Create account</button>
                                     </form>
 
                                 </div>
@@ -248,12 +256,30 @@
     </div>
 </div>
 
+<!-- Error Modal-->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Error! Try again!</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">{{ errorMessage }}</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap core JavaScript-->
 <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 <!-- Show Password -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
 
 <!-- Core plugin JavaScript-->

@@ -5,17 +5,30 @@ class createAccountFunctions():
         errorMessage = ""
 
         #check size of inputted username and password
-        if (len(userName) < 1 or len(userName) > 40) or (len(password) < 1 or len(password) > 40):
-            errorMessage = "Invalid userName and/or password"
+        if userName == "" and password == "":
+            errorMessage = "No Username or Password Provided!"
+            return errorMessage
+        if userName == "":
+            errorMessage = "No Username Provided!"
+            return errorMessage
+        elif len(userName) > 40:
+            errorMessage = "UserName Is Too Long!"
+            return errorMessage
+        elif password == "":
+            errorMessage = "No Password Provided!"
+            return errorMessage
+        elif len(password) > 40:
+            errorMessage = "Password Is Too Long!"
+            return errorMessage
         else:
             existingAccounts = list(myAccount.objects.filter(userName=userName))
 
         #check database to see if there is an account that already exists
         if (len(existingAccounts) != 0):
-            errorMessage = "An account with this userName already exits"
+            errorMessage = "Username Already Exists!"
         else:
             #creates new account with inputted fields and saves it to the database
-            newAccount = myAccount(userName, password)
+            newAccount = myAccount(userName=userName, password=password)
             newAccount.save()
 
         return errorMessage
