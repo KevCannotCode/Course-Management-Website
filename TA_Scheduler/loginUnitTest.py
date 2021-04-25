@@ -11,8 +11,8 @@ class loginUnitTest(TestCase):
         self.adminUser = myAccount.objects.create(userName="admin", password="password")
         self.standardUser = myAccount.objects.create(userName="dude", password="pass")
         self.emptyUser = myAccount.objects.create(userName="", password="")
-        self.longInputsUser = myAccount.objects.create(name = "0123456789012345678901234567890123456789"
-                            , password= "0123456789012345678901234567890123456789")
+        self.longUsername = "0123456789012345678901234567890123456789blablabla"
+        self.longPassword = "0123456789012345678901234567890123456789blablabla"
     def good_login_test(self):
         #the admin and standard username should be found in the database
         self.assertEquals(myLogin(self.adminUser.userName, self.adminUser.password), "", "The credentials were correct but the login failed")
@@ -20,13 +20,13 @@ class loginUnitTest(TestCase):
 
     def long_inputs_test(self):
         #long username
-        self.assertEquals(myLogin(self.longInputsUser.userName, self.adminUser.password), "The Username Is Too Long!",  "The username was wrong but login did not fail")
-        self.assertEquals(myLogin(self.longInputsUser.userName, self.standardUser.password), "The Username Is Too Long!", "The username was wrong but login did not fail")
+        self.assertEquals(myLogin(self.longUsername, self.adminUser.password), "The Username Is Too Long!",  "The username was wrong but login did not fail")
+        self.assertEquals(myLogin(self.longUsername, self.standardUser.password), "The Username Is Too Long!", "The username was wrong but login did not fail")
         #long password
-        self.assertEquals(myLogin(self.adminUser.userName, self.longInputsUser.password), "The Password Is Too Long!",  "The username was wrong but login did not fail")
-        self.assertEquals(myLogin(self.standardUser.userName, self.longInputsUser.password),"The Password Is Too Long!", "The username was wrong but login did not fail")
+        self.assertEquals(myLogin(self.adminUser.userName, self.longPassword), "The Password Is Too Long!",  "The username was wrong but login did not fail")
+        self.assertEquals(myLogin(self.standardUser.userName, self.longPassword),"The Password Is Too Long!", "The username was wrong but login did not fail")
         #both inputs are too long
-        self.assertEquals(myLogin(self.longInputsUser.userName, self.longInputsUser.password),"The Username Is Too Long!",  "The username was wrong but login did not fail")
+        self.assertEquals(myLogin(self.longUsername, self.longPassword),"The Username Is Too Long!",  "The username was wrong but login did not fail")
 
     def wrong_username_test(self):
         self.assertEquals(myLogin("wrong", self.adminUser.password), "User doesn't exist",  "The username was wrong but login did not fail")
