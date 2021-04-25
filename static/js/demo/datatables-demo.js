@@ -2,15 +2,15 @@
 
 var accountData = $('#accountData').DataTable();
 var courseData = $('#courseData').DataTable();
-var sectionData = $('#sectionData').DataTable();
+var labData = $('#labData').DataTable();
 
 var accountDataCount = accountData.rows().count()
 var courseDataCount = courseData.rows().count()
-var sectionDataCount = sectionData.rows().count()
+var labDataCount = labData.rows().count()
 
 document.getElementById("accountDataCount").innerHTML = accountDataCount;
 document.getElementById("courseDataCount").innerHTML = courseDataCount;
-document.getElementById("sectionDataCount").innerHTML = sectionDataCount;
+document.getElementById("labDataCount").innerHTML = labDataCount;
 
 
 $(document).ready(function() {
@@ -20,5 +20,5 @@ $(document).ready(function() {
   $courseData.DataTable();
 });
 $(document).ready(function() {
-  $sectionData.DataTable();
+  $labData.DataTable();
 });

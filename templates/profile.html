@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>TA Scheduler - Home</title>
+    <title>TA Scheduler - Create Account</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -20,7 +20,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static '/css/sb-admin-2.min.css' %}" rel="stylesheet">
-	<!-- Custom styles for this page -->
+    <!-- Custom styles for this page -->
     <link href="{% static '/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
 </head>
@@ -45,7 +45,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/home">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -59,21 +59,20 @@
                 Create
             </div>
 
-
 			<!-- Nav Item - Account Creation -->
 			<li class="nav-item">
                 <a class="nav-link" href="/create-account">
 					<i class="fas fa-user-circle"></i>
                     <span>Create Account</span></a>
             </li>
-			
+
 			<!-- Nav Item - Course Creation -->
 			<li class="nav-item">
                 <a class="nav-link" href="/create-course">
 					<i class="fas fa-book-open"></i>
                     <span>Create Course</span></a>
             </li>
-			
+
 			<!-- Nav Item - Section Creation -->
 			<li class="nav-item">
                 <a class="nav-link" href="/create-lab">
@@ -81,13 +80,11 @@
                     <span>Create Lab</span></a>
             </li>
 
-        <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
-
 
         </ul>
         <!-- End of Sidebar -->
@@ -113,7 +110,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ userName }}</span>
                                 <img class="img-profile rounded-circle"
-                                    src="{% static 'img/undraw_profile.svg' %}">
+                                    src="{% static '/img/undraw_profile.svg' %}">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -134,173 +131,102 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                <div class="container-fluid">
+                    <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Profile</h1>
                     </div>
-                </div>
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Number of Accounts -->
-                        <div class="col-xl-4 col-md-4 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Number of Accounts</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="accountDataCount"></div>
-                                        </div>
-                                        <div class="col-auto">
-											<i class="fas fa-user-circle fa-2x text-gray-300"></i>
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Number of Courses -->
-                        <div class="col-xl-4 col-md-4 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Number of Courses</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="courseDataCount"></div>
-                                        </div>
-                                        <div class="col-auto">
-											<i class="fas fa-book-open fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Number of Sections -->
-                        <div class="col-xl-4 col-md-4 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of Labs</div>
-											 <div class="h5 mb-0 font-weight-bold text-gray-800" id="labDataCount"></div>
-                                        </div>
-                                        <div class="col-auto">
-											<i class="fas fa-flask fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
-                     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-danger">Accounts</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="accountData" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Password</th>
-                                            <th>Phone Number</th>
-                                            <th>Email Address</th>
-
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                    {% for i in account_list %}
-                                        <tr>
-                                            {% for j in contact_list %}
-
-                                            <td>{{ i.0 }}</td>
-                                            <td>{{ i.1 }}</td>
-                                                {% if i.0 == j.0 %}
-                                                <td>{{ j.1 }}</td>
-                                                <td>{{ j.2 }}</td>
-                                                {% else %}
-                                                <td>NOT SET</td>
-                                                <td>NOT SET</td>
-                                                {% endif %}
-                                            {% endfor %}
-                                    </tbody>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-					
-					<div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-success">Courses</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="courseData" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-											<th>Course Number</th>
-                                            <th>Course Name</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                    {% for i in course_list %}
-                                        <tr>
-                                            <td>{{ i.0 }}</td>
-                                            <td>{{ i.1 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-					
-					
-					<div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-info">Labs</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="labData" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-											<th>Lab Number</th>
-                                            <th>Lab Name</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                    {% for i in lab_list %}
-                                        <tr>
-                                            <td>{{ i.0 }}</td>
-                                            <td>{{ i.1 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-	
-					
-                </div>
                 <!-- /.container-fluid -->
+                        <!-- Phone Number -->
+                    <div class="row">
+                        <div class="col-xl-3 col-md-3 mb-3"></div>
+                        <div class="col-xl-3 col-md-3 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Phone Number</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ phoneNumber }}</div>
+                                        </div>
+                                        <div class="col-auto">
+											<i class="fas fa-phone fa-2x text-gray-300"></i>
 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                                                <!-- Email Address -->
+                        <div class="col-xl-3 col-md-4 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Email Address</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ emailAddress }}</div>
+                                        </div>
+                                        <div class="col-auto">
+											<i class="fas fa-envelope fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+				        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-4 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-5">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Update Your Profile!</h1>
+                            </div>
+                            <form class="user" action="/profile/" method="post">
+                                {% csrf_token %}
+                                <div class="form-group row">
+									<div class="col-sm-6  mb-3 mb-sm-0">
+                                        <input required="true" type="tel" class="form-control" name="phoneNumber" placeholder="Phone Number (123-546-7890)" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input required="true" type="email" class="form-control" name="emailAddress" placeholder="Email Address"> </div>
+                                </div>
+                                <!--
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+									 <label for="exampleFormControlSelect1">User Type</label>
+										<select class="form-control" id="exampleFormControlSelect1">
+											<option>Administrator</option>
+											<option>Instructor</option>
+											<option>TA</option>
+										</select>
+                                    </div>
+                                </div> -->
+                                 <button type="submit" class="btn btn-primary btn-user btn-block">Update Profile</button>
+                            </form>
+                        <!--    <hr>
+                            <div class="text-center">
+                                <a class="small" href="forgot-password.html">Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+                                <a class="small" href="index.html">Already have an account? Login!</a>
+                            </div>
+							-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        </div>
+
+
+            </div>
             </div>
             <!-- End of Main Content -->
 
@@ -338,7 +264,6 @@
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
-
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="/logout/">Logout</a>
                 </div>
@@ -350,15 +275,19 @@
     <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
+	<!-- Show Password -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+
     <!-- Core plugin JavaScript-->
     <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
 
     <!-- Page level plugins -->
     <script src="{% static '/vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static '/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{% static '/js/demo/datatables-demo.js' %}"></script>
