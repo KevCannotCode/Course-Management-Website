@@ -6,6 +6,7 @@ from .models import myLab
 from .models import myContact
 from .createCourseFunctions import createCourseFunctions
 from .createLabFunctions import createLabFunctions
+from .createAccount import createAccountFunctions
 from .myLogin import myLogin
 from django.contrib.auth import logout as auth_logout
 
@@ -50,8 +51,13 @@ class CreateAccount(View):
     def get(self,request):
         userName = request.session["userName"]
         account_list = list(myAccount.objects.values_list("userName", "password"))
-        return render(request,"create-account.html",{"account_list":account_list, "userName":userName})
+        return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":""})
 
+    def post(self,request):
+        userName = request.session["userName"]
+        errorMessage = createAccountFunctions.createAccount(request.POST["userName"], request.POST["password"])
+        account_list = list(myAccount.objects.values_list("userName", "password"))
+        return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":errorMessage})
 
 class CreateCourse(View):
     def get(self,request):
