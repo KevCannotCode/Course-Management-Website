@@ -40,8 +40,9 @@ class Home(View):
         account_list = list(myAccount.objects.values_list("userName", "password"))
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
         lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        contact_list = list(myContact.objects.values_list("userName","phoneNumber", "emailAddress"))
 
-        return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName})
+        return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list})
 
 
 class CreateAccount(View):
