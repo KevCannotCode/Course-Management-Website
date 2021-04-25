@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test import Client
-from .models import myLab
+from .models import myAccount
 from .createLabFunctions import createLabFunctions
 
 
@@ -9,9 +9,11 @@ from .createLabFunctions import createLabFunctions
 class testCreateSection(TestCase):
     def setUp(self):
         self.client = Client()
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def acceptance_testCreateSection(self):
-        response = self.client.post("/create-section/", {"labNumber": "1", "labName": "Section 1"})
+        response = self.client.post("/create-lab/", {"labNumber": "1", "labName": "Section 1"})
         lab_list = response.context["lab_list"]
         testLab = lab_list[0]
         self.assertEqual("1", str(testLab[0]), "New section creation failed at sectionNumber")
@@ -28,9 +30,11 @@ class testDuplicateSection(TestCase):  # testing if sectionNumber already exists
     def setUp(self):
         self.client = Client()
         self.newLab = createLabFunctions.createLab(labNumber="1", labName="Section 1")
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def acceptance_testDuplicateSection(self):
-        response = self.client.post("/create-section/", {"labNumber": "1", "labName": "Section 1"})
+        response = self.client.post("/create-lab/", {"labNumber": "1", "labName": "Section 1"})
         self.assertEqual("Lab Number Already Exists", response.context["errorMessage"],
                          "Error creating new section, labNumber already exists")
 
@@ -43,9 +47,11 @@ class testDuplicateSection(TestCase):  # testing if sectionNumber already exists
 class testSectionInput(TestCase):  # testing if sectionNumber is a number
     def setUp(self):
         self.client = Client()
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def acceptance_testInput(self):
-        response = self.client.post("/create-section/", {"labNumber": "one", "labName": "Section 1"})
+        response = self.client.post("/create-lab/", {"labNumber": "one", "labName": "Section 1"})
         self.assertEqual("Lab Number Isn't Numeric", response.context["errorMessage"],
                          "Error creating new section, labNumber is not a number")
 
