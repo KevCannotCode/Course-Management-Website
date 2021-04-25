@@ -57,7 +57,8 @@ class CreateAccount(View):
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
         account_list = list(myAccount.objects.values_list("userName", "password"))
-        return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":""})
+        contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
+        return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":"", "contact_list":contact_list})
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -66,7 +67,21 @@ class CreateAccount(View):
                 return render(request, "logout.html", {})
             errorMessage = createAccountFunctions.createAccount(request.POST["userName"], request.POST["password"])
             account_list = list(myAccount.objects.values_list("userName", "password"))
-            return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+            contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
+            return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":errorMessage, "contact_list":contact_list})
+
+class DeleteAccount(View):
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if(verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+
+            deleteAccount = list(myAccount.objects.filter(userName=request.POST["deleteAccount"]))[0]
+            deleteAccount.delete()
+            deleteContact = list(myContact.objects.filter(userName=request.POST["deleteAccount"]))[0]
+            deleteContact.delete()
+            return redirect(request.POST["returnUrl"])
 
 class CreateCourse(View):
     def get(self,request):
@@ -85,6 +100,16 @@ class CreateCourse(View):
             course_list = list(myCourse.objects.values_list("courseNumber","courseName"))
             return render(request,"create-course.html", {"course_list":course_list, "errorMessage":errorMessage, "userName":userName})
 
+class DeleteCourse(View):
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if(verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+
+            deleteCourse = list(myCourse.objects.filter(courseNumber=request.POST["deleteCourse"]))[0]
+            deleteCourse.delete()
+            return redirect(request.POST["returnUrl"])
 
 class CreateLab(View):
     def get(self,request):
@@ -103,14 +128,22 @@ class CreateLab(View):
             lab_list = list(myLab.objects.values_list("labNumber","labName"))
             return render(request,"create-lab.html", {"lab_list":lab_list, "errorMessage":errorMessage, "userName":userName})
 
+class DeleteLab(View):
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if(verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+
+            deleteLab = list(myLab.objects.filter(labNumber=request.POST["deleteLab"]))[0]
+            deleteLab.delete()
+            return redirect(request.POST["returnUrl"])
+
 class Profile(View):
     def get(self,request):
         userName = request.session["userName"]
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
-
-        if(len(list(myContact.objects.filter(userName=userName))) == 0):
-            myContact.objects.create(userName=userName, phoneNumber="NOT SET", emailAddress="NOT SET")
 
         contact = list(myContact.objects.filter(userName=userName))[0]
         return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})
@@ -120,9 +153,6 @@ class Profile(View):
             userName = request.session["userName"]
             if(verifyLogin.verifyLogin(userName, request) == False):
                 return render(request, "logout.html", {})
-
-            if(len(list(myContact.objects.filter(userName=userName))) == 0):
-                myContact.objects.create(userName=userName, phoneNumber="NOT SET", emailAddress="NOT SET")
 
             contact = list(myContact.objects.filter(userName=userName))[0]
             contact.phoneNumber = request.POST["phoneNumber"]

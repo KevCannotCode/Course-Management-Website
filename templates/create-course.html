@@ -197,6 +197,7 @@
                                 <tr>
                                     <th>Course Number</th>
                                     <th>Course Name</th>
+                                    <th style="width: 20%;">Delete</th>
                                 </tr>
                                 </thead>
 
@@ -205,6 +206,7 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                    <td> <form action="/delete-course/" method="post">{% csrf_token %}<button type="submit" class="btn btn-success btn-user btn-block" name="deleteCourse" value="{{ i.0 }}">Delete Course</button><input type="hidden" name="returnUrl" value="/create-course/"></form></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

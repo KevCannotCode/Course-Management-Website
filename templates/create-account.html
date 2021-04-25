@@ -194,14 +194,24 @@
                                 <tr>
                                     <th>Username</th>
                                     <th>Password</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+                                    <th style="width: 20%;">Delete</th>
                                 </tr>
                                 </thead>
-
                                 <tbody>
                                 {% for i in account_list %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                        {% for j in contact_list %}
+                                            {% if i.0 == j.0 %}
+                                                <td>{{ j.1 }}</td>
+                                                <td>{{ j.2 }}</td>
+                                            {% endif %}
+
+                                        {% endfor %}
+                                        <td> <form action="/delete-account/" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger btn-user btn-block" name="deleteAccount" value="{{ i.0 }}">Delete Account</button><input type="hidden" name="returnUrl" value="/create-account/"></form></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

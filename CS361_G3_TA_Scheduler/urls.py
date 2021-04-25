@@ -19,8 +19,11 @@ from TA_Scheduler.views import Login
 from TA_Scheduler.views import Logout
 from TA_Scheduler.views import Home
 from TA_Scheduler.views import CreateAccount
+from TA_Scheduler.views import DeleteAccount
 from TA_Scheduler.views import CreateCourse
+from TA_Scheduler.views import DeleteCourse
 from TA_Scheduler.views import CreateLab
+from TA_Scheduler.views import DeleteLab
 from TA_Scheduler.views import Profile
 
 urlpatterns = [
@@ -28,8 +31,11 @@ urlpatterns = [
     path('',Login.as_view()),
     path('home/', Home.as_view()),
     path('create-account/', CreateAccount.as_view()),
+    path('delete-account/', DeleteAccount.as_view()),
     path('create-course/', CreateCourse.as_view()),
+    path('delete-course/', DeleteCourse.as_view()),
     path('create-lab/', CreateLab.as_view()),
+    path('delete-lab/', DeleteLab.as_view()),
     path('logout/', Logout.as_view()),
     path('profile/', Profile.as_view())
 ]
