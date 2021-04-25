@@ -2,27 +2,27 @@ from .models import myLab
 
 
 class createLabFunctions:
-    def createLab(self, labName):  # self = labNumber
+    def createLab(labNumber, labName):
         errorMessage = ""
-        if self == "" and labName == "":
+        if labNumber == "" and labName == "":
             errorMessage = "Lab name and number are empty"
             return errorMessage
-        elif self == "":
+        elif labNumber == "":
             errorMessage = "Lab number is empty"
             return errorMessage
         elif labName == "":
             errorMessage = "Lab name is empty"
             return errorMessage
 
-        if len(self) > 10:
+        if len(labNumber) > 10:
             errorMessage = "Lab Number Is Too Long!"
             return errorMessage
 
-        if not (self.isnumeric()):
+        if not (labNumber.isnumeric()):
             errorMessage = "Lab Number Isn't Numeric"
             return errorMessage
 
-        existingLab = list(myLab.objects.filter(labNumber=self))
+        existingLab = list(myLab.objects.filter(labNumber=labNumber))
 
         if len(existingLab) != 0:
             errorMessage = "Lab Number Already Exists"
@@ -33,6 +33,6 @@ class createLabFunctions:
             return errorMessage
 
         errorMessage = ""
-        l1 = myLab(labNumber=self, labName=labName)
+        l1 = myLab(labNumber=labNumber, labName=labName)
         l1.save()
         return errorMessage
