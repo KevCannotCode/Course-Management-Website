@@ -220,27 +220,26 @@
 
                                 </tr>
                                 </thead>
-
                                 <tbody>
                                 {% for i in account_list %}
                                     <tr>
-                                        {% for j in contact_list %}
-
                                             <td>{{ i.0 }}</td>
                                             <td>{{ i.1 }}</td>
+                                        {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
-                                                <td>{{ j.1 }}</td>
-                                                <td>{{ j.2 }}</td>
+
+                                            <td>{{ j.1 }}</td>
+                                            <td>{{ j.2 }}</td>
                                             {% else %}
-                                                <td>NOT SET</td>
-                                                <td>NOT SET</td>
+                                            <td>NOT SET</td>
+                                            <td>NOT SET</td>
                                             {% endif %}
                                         {% endfor %}
-                                    </tbody>
                                     </tr>
                                 {% endfor %}
-                                </tbody>
+                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>

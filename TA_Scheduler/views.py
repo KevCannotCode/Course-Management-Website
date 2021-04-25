@@ -5,6 +5,7 @@ from .models import myCourse
 from .models import myLab
 from .models import myContact
 from .createCourseFunctions import createCourseFunctions
+from .createLabFunctions import createLabFunctions
 from .myLogin import myLogin
 from django.contrib.auth import logout as auth_logout
 
@@ -70,8 +71,14 @@ class CreateLab(View):
     def get(self,request):
         userName = request.session["userName"]
         lab_list = list(myLab.objects.values_list("labNumber", "labName"))
-        return render(request,"create-lab.html",{"lab_list":lab_list, "userName":userName})
+        return render(request,"create-lab.html",{"lab_list":lab_list, "userName":userName, "errorMessage":""})
 
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            errorMessage = createLabFunctions.createLab(request.POST["labNumber"], request.POST["labName"])
+            lab_list = list(myLab.objects.values_list("labNumber","labName"))
+            return render(request,"create-lab.html", {"lab_list":lab_list, "errorMessage":errorMessage, "userName":userName})
 
 class Profile(View):
     def get(self,request):
