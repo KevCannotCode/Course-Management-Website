@@ -1,4 +1,5 @@
 from .models import myAccount
+from .models import myContact
 
 class createAccountFunctions():
     def createAccount(userName, password):
@@ -26,9 +27,14 @@ class createAccountFunctions():
         #check database to see if there is an account that already exists
         if (len(existingAccounts) != 0):
             errorMessage = "Username Already Exists!"
+            return errorMessage
+
+
         else:
             #creates new account with inputted fields and saves it to the database
             newAccount = myAccount(userName=userName, password=password)
             newAccount.save()
+            newContact = myContact(userName=userName, phoneNumber="NOT SET", emailAddress="NOT SET")
+            newContact.save()
 
         return errorMessage

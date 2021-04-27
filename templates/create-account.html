@@ -74,21 +74,36 @@
         <li class="nav-item active">
             <a class="nav-link" href="/create-account">
                 <i class="fas fa-user-circle"></i>
-                <span>Create Account</span></a>
+                <span>Account</span></a>
         </li>
 
         <!-- Nav Item - Course Creation -->
         <li class="nav-item">
             <a class="nav-link" href="/create-course">
                 <i class="fas fa-book-open"></i>
-                <span>Create Course</span></a>
+                <span>Course</span></a>
         </li>
 
         <!-- Nav Item - Section Creation -->
         <li class="nav-item">
             <a class="nav-link" href="/create-lab">
                 <i class="fas fa-flask"></i>
-                <span>Create Lab</span></a>
+                <span>Lab</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Assign
+        </div>
+
+        <!-- Nav Item - Assign Instructor -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+               <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <span>Course Instructor</span></a>
         </li>
 
         <hr class="sidebar-divider d-none d-md-block">
@@ -166,11 +181,11 @@
                                         {% csrf_token %}
                                         <div class="form-group row">
                                             <div class="col-sm-6  mb-3 mb-sm-0">
-                                                <input type="text" class="form-control" name="userName"
+                                                <input required="true" type="text" class="form-control" name="userName"
                                                        placeholder="Username">
                                             </div>
                                             <div class="col-sm-6">
-                                                <input data-toggle="password" name="password" class="form-control"
+                                                <input required="true" data-toggle="password" name="password" class="form-control"
                                                        type="password"  placeholder="Password">
                                             </div>
                                         </div>
@@ -194,14 +209,24 @@
                                 <tr>
                                     <th>Username</th>
                                     <th>Password</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+                                    <th style="width: 20%;">Delete</th>
                                 </tr>
                                 </thead>
-
                                 <tbody>
                                 {% for i in account_list %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                        {% for j in contact_list %}
+                                            {% if i.0 == j.0 %}
+                                                <td>{{ j.1 }}</td>
+                                                <td>{{ j.2 }}</td>
+                                            {% endif %}
+
+                                        {% endfor %}
+                                        <td> <form action="/delete-account/" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger btn-user btn-block" name="deleteAccount" value="{{ i.0 }}">Delete Account</button><input type="hidden" name="returnUrl" value="/create-account/"></form></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -279,9 +304,6 @@
 <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-<!-- Show Password -->
-<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
-
 <!-- Core plugin JavaScript-->
 <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
@@ -294,6 +316,9 @@
 
 <!-- Page level custom scripts -->
 <script src="{% static '/js/demo/datatables-demo.js' %}"></script>
+
+<!-- Show Password -->
+<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
 
 </body>
 

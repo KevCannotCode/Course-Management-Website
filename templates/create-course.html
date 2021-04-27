@@ -75,23 +75,37 @@
         <li class="nav-item">
             <a class="nav-link" href="/create-account">
                 <i class="fas fa-user-circle"></i>
-                <span>Create Account</span></a>
+                <span>Account</span></a>
         </li>
 
         <!-- Nav Item - Course Creation -->
         <li class="nav-item active">
             <a class="nav-link" href="/create-course">
                 <i class="fas fa-book-open"></i>
-                <span>Create Course</span></a>
+                <span>Course</span></a>
         </li>
 
         <!-- Nav Item - Section Creation -->
         <li class="nav-item">
             <a class="nav-link" href="/create-lab">
                 <i class="fas fa-flask"></i>
-                <span>Create Lab</span></a>
+                <span>Lab</span></a>
         </li>
 
+                <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Assign
+        </div>
+
+        <!-- Nav Item - Assign Instructor -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+               <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <span>Course Instructor</span></a>
+        </li>
 
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
@@ -197,6 +211,7 @@
                                 <tr>
                                     <th>Course Number</th>
                                     <th>Course Name</th>
+                                    <th style="width: 20%;">Delete</th>
                                 </tr>
                                 </thead>
 
@@ -205,6 +220,7 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                    <td> <form action="/delete-course/" method="post">{% csrf_token %}<button type="submit" class="btn btn-success btn-user btn-block" name="deleteCourse" value="{{ i.0 }}">Delete Course</button><input type="hidden" name="returnUrl" value="/create-course/"></form></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -285,13 +301,11 @@
 <!-- Core plugin JavaScript-->
 <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
-<!-- Custom scripts for all pages-->
-<script src="{% static '/js/sb-admin-2.min.js' %}"></script>
-
 
 <!-- Page level plugins -->
 <script src="{% static '/vendor/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static '/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
 
 <!-- Custom scripts for all pages-->
 <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
