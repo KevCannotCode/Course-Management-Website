@@ -11,23 +11,25 @@ class CreateNewAccount(TestCase):
     def setUp(self):
         self.myClient = Client()
         self.thingList = {'flynnk': 'flynnPassword', 'smithj': 'smithPassword', 'petersont': "petersonPassword"}
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.myClient.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
         for i in self.thingList.keys():
             temp = myAccount(userName=i, password= self.thingList.get(i))
             temp.save()
 
     def test_acceptanceTest_newAccount(self):
-        resp = self.myClient.post("/create-account/", {"userName": "petersont", "password" : "petersonaPassword"}, follow=True)
-        self.assertEqual(resp.context["message"], "account created", "new account not created, user:todd, pass:toddPassword")
+        resp = self.myClient.post("/create-account/", {"userName": "jacksonl", "password" : "jacksonlPassword"})
+        self.assertEqual("", resp.context["errorMessage"], "new account not created, user:todd, pass:toddPassword")
 
     def test_acceptanceTest_UsernameUsed(self):
         for i in self.thingList.keys():
-            resp = self.myClient.post("/create-account/", {"name": i, "password": self.thingList.get(i)}, follow=True)
-            self.assertEqual(resp.context["message"], "duplicate user", "not stopped from creating duplicate account")
+            resp = self.myClient.post("/create-account/", {"userName": i, "password": self.thingList.get(i)}, follow=True)
+            self.assertEqual("Username Already Exists!", resp.context["errorMessage"], "not stopped from creating duplicate account")
 
     def test_acceptanceTest_invalidAccountInput(self):
-        resp = self.myClient.post("/create-account/", {"name": "", "password": "randomPassword"}, follow=True)
-        self.assertEqual(resp.context["message"], "invalid input", "system allowed an invalid input for account creation")
+        resp = self.myClient.post("/create-account/", {"userName": "", "password": "randomPassword"}, follow=True)
+        self.assertEqual("No Username Provided!", resp.context["errorMessage"], "system allowed an invalid input for account creation")
 
     def test_unitTest_newAccount(self):
         errorMessage = createAccountFunctions.createAccount("williamsg", "williamsPassword")
