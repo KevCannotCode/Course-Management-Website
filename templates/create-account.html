@@ -102,7 +102,7 @@
         <!-- Nav Item - Assign Instructor -->
         <li class="nav-item">
             <a class="nav-link" href="#">
-               <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
                 <span>Course Instructor</span></a>
         </li>
 
@@ -185,11 +185,13 @@
                                                        placeholder="Username">
                                             </div>
                                             <div class="col-sm-6">
-                                                <input required="true" data-toggle="password" name="password" class="form-control"
-                                                       type="password"  placeholder="Password">
+                                                <input required="true" data-toggle="password" name="password"
+                                                       class="form-control"
+                                                       type="password" placeholder="Password">
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-danger btn-user btn-block">Create account</button>
+                                        <button type="submit" class="btn btn-danger btn-user btn-block">Create account
+                                        </button>
                                     </form>
 
                                 </div>
@@ -226,7 +228,13 @@
                                             {% endif %}
 
                                         {% endfor %}
-                                        <td> <form action="/delete-account/" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger btn-user btn-block" name="deleteAccount" value="{{ i.0 }}">Delete Account</button><input type="hidden" name="returnUrl" value="/create-account/"></form></td>
+                                        <td>
+                                            <form action="/delete-account/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-user btn-block"
+                                                        name="deleteAccount" value="{{ i.0 }}">Delete Account
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/create-account/"></form>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

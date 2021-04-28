@@ -92,7 +92,7 @@
         <!-- Nav Item - Assign Instructor -->
         <li class="nav-item">
             <a class="nav-link" href="#">
-               <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
                 <span>Course Instructor</span></a>
         </li>
 
@@ -248,7 +248,13 @@
                                             {% endif %}
 
                                         {% endfor %}
-                                        <td> <form action="/delete-account/" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger btn-user btn-block" name="deleteAccount" value="{{ i.0 }}">Delete Account</button><input type="hidden" name="returnUrl" value="/home/"></form></td>
+                                        <td>
+                                            <form action="/delete-account/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-user btn-block"
+                                                        name="deleteAccount" value="{{ i.0 }}">Delete Account
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -278,7 +284,13 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
-                                    <td> <form action="/delete-course/" method="post">{% csrf_token %}<button type="submit" class="btn btn-success btn-user btn-block" name="deleteCourse" value="{{ i.0 }}">Delete Course</button><input type="hidden" name="returnUrl" value="/home/"></form></td>
+                                        <td>
+                                            <form action="/delete-course/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-user btn-block"
+                                                        name="deleteCourse" value="{{ i.0 }}">Delete Course
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -308,7 +320,13 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
-                                    <td> <form action="/delete-lab/" method="post">{% csrf_token %}<button type="submit" class="btn btn-info btn-user btn-block" name="deleteLab" value="{{ i.0 }}">Delete Lab</button><input type="hidden" name="returnUrl" value="/home/"></form></td>
+                                        <td>
+                                            <form action="/delete-lab/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-info btn-user btn-block"
+                                                        name="deleteLab" value="{{ i.0 }}">Delete Lab
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

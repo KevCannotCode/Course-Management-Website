@@ -92,7 +92,7 @@
                 <span>Lab</span></a>
         </li>
 
-                <!-- Divider -->
+        <!-- Divider -->
         <hr class="sidebar-divider">
 
         <!-- Heading -->
@@ -103,7 +103,7 @@
         <!-- Nav Item - Assign Instructor -->
         <li class="nav-item">
             <a class="nav-link" href="#">
-               <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
                 <span>Course Instructor</span></a>
         </li>
 
@@ -220,7 +220,13 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
-                                    <td> <form action="/delete-course/" method="post">{% csrf_token %}<button type="submit" class="btn btn-success btn-user btn-block" name="deleteCourse" value="{{ i.0 }}">Delete Course</button><input type="hidden" name="returnUrl" value="/create-course/"></form></td>
+                                        <td>
+                                            <form action="/delete-course/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-user btn-block"
+                                                        name="deleteCourse" value="{{ i.0 }}">Delete Course
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/create-course/"></form>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
