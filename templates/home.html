@@ -230,6 +230,7 @@
                                 <tr>
                                     <th>Username</th>
                                     <th>Password</th>
+                                    <th>User Type</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
                                     <th style="width: 20%;">Delete</th>
@@ -241,6 +242,7 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                        <td>{{ i.2 }}</td>
                                         {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>

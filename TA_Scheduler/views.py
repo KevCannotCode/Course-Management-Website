@@ -43,7 +43,7 @@ class Home(View):
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
 
-        account_list = list(myAccount.objects.values_list("userName", "password"))
+        account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
         lab_list = list(myLab.objects.values_list("labNumber", "labName"))
         contact_list = list(myContact.objects.values_list("userName","phoneNumber", "emailAddress"))
@@ -56,7 +56,7 @@ class CreateAccount(View):
         userName = request.session["userName"]
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
-        account_list = list(myAccount.objects.values_list("userName", "password"))
+        account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
         contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
         return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":"", "contact_list":contact_list})
 
@@ -65,8 +65,8 @@ class CreateAccount(View):
             userName = request.session["userName"]
             if(verifyLogin.verifyLogin(userName, request) == False):
                 return render(request, "logout.html", {})
-            errorMessage = createAccountFunctions.createAccount(request.POST["userName"], request.POST["password"])
-            account_list = list(myAccount.objects.values_list("userName", "password"))
+            errorMessage = createAccountFunctions.createAccount(request.POST["userName"], request.POST["password"], request.POST["userType"])
+            account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
             contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
             return render(request,"create-account.html",{"account_list":account_list, "userName":userName, "errorMessage":errorMessage, "contact_list":contact_list})
 

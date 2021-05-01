@@ -189,6 +189,14 @@
                                                        class="form-control"
                                                        type="password" placeholder="Password">
                                             </div>
+                                            <div class="col-sm-12">
+                                            <select class="form-control" name="userType">
+                                                <option value="Choose User Type">Choose User Type</option>
+                                                <option value="Administrator">Administrator</option>
+                                                <option value="Instructor">Instructor</option>
+                                                <option value="TA">TA</option>
+                                            </select>
+                                                </div>
                                         </div>
                                         <button type="submit" class="btn btn-danger btn-user btn-block">Create account
                                         </button>
@@ -211,6 +219,7 @@
                                 <tr>
                                     <th>Username</th>
                                     <th>Password</th>
+                                    <th>User Type</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
                                     <th style="width: 20%;">Delete</th>
@@ -221,6 +230,7 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                        <td>{{ i.2 }}</td>
                                         {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
