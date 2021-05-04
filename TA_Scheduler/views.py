@@ -47,9 +47,9 @@ class Home(View):
             return render(request, "logout.html", {})
 
         if(request.session["userType"] == "Administrator"):
-            print("HELLO")
+            print("Administrator")
         elif(request.session["userType"] == "Instructor"):
-
+            print("Instructor")
 
         #errorMessage=""
         #errorMessage=request.session["error"]
