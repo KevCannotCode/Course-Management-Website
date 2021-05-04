@@ -96,6 +96,14 @@
                 <span>Course Instructor</span></a>
         </li>
 
+        <!-- Nav Item - Assign Instructor -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-flask"></i>
+                <span>Lab TA</span></a>
+        </li>
+
+
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
@@ -243,6 +251,7 @@
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
                                         <td>{{ i.2 }}</td>
+
                                         {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
@@ -251,11 +260,26 @@
 
                                         {% endfor %}
                                         <td>
-                                            <form action="/delete-account/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-danger btn-user btn-block"
-                                                        name="deleteAccount" value="{{ i.0 }}">Delete Account
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+
+                                            {% if i.0 != userName %}
+                                                {% if i.0 in course_list.instructorUserName %}
+                                                    HELLO
+                                                    {% endif %}
+
+                                                <form action="/delete-account/" method="post">{% csrf_token %}
+                                                    <button type="submit"
+                                                            class="btn btn-danger btn-user btn-block"
+                                                            name="deleteAccount" value="{{ i.0 }}">Delete
+                                                        Account
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl"
+                                                           value="/home/"></form>
+
+
+                                                {% else %}
+                                                You cannot delete yourself!
+                                            {% endif %}
+
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -289,11 +313,17 @@
                                         <td>{{ i.1 }}</td>
                                         <td>{{ i.2 }}</td>
                                         <td>
-                                            <form action="/delete-course/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-success btn-user btn-block"
-                                                        name="deleteCourse" value="{{ i.0 }}">Delete Course
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                            {% if i.2 == "NOT SET" %}
+                                                <form action="/delete-course/" method="post">{% csrf_token %}
+                                                    <button type="submit" class="btn btn-success btn-user btn-block"
+                                                            name="deleteCourse" value="{{ i.0 }}">Delete Course
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl" value="/home/">
+                                                </form>
+                                            {% else %}
+                                               Please Remove Assigned Instructor!
+
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}

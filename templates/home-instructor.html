@@ -154,7 +154,7 @@
                 <!-- Page Heading -->
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Administrator Dashboard</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Instructor Dashboard</h1>
                     </div>
                 </div>
                 <!-- Content Row -->
@@ -284,6 +284,7 @@
 
                                 <tbody>
                                 {% for i in course_list %}
+                                    {% if i.2 == userName %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
@@ -296,6 +297,7 @@
                                                 <input type="hidden" name="returnUrl" value="/home/"></form>
                                         </td>
                                     </tr>
+                                    {% endif %}
                                 {% endfor %}
                                 </tbody>
                             </table>

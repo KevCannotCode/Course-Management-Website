@@ -32,6 +32,8 @@ class Login(View):
                 m = myAccount.objects.get(userName=request.POST['userName'])
                 request.session["userName"] = m.userName
                 request.session["userType"] = m.userType
+                request.session["error"] = ""
+
 
                 return redirect("/home/")
 
@@ -46,10 +48,7 @@ class Home(View):
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
 
-        if(request.session["userType"] == "Administrator"):
-            print("Administrator")
-        elif(request.session["userType"] == "Instructor"):
-            print("Instructor")
+
 
         #errorMessage=""
         #errorMessage=request.session["error"]
@@ -60,7 +59,12 @@ class Home(View):
         lab_list = list(myLab.objects.values_list("labNumber", "labName"))
         contact_list = list(myContact.objects.values_list("userName","phoneNumber", "emailAddress"))
 
-        return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":""})
+        if(request.session["userType"] == "Administrator"):
+            return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":""})
+        elif(request.session["userType"] == "Instructor"):
+            return render(request, "home-instructor.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":""})
+
+
 
 
 class CreateAccount(View):
