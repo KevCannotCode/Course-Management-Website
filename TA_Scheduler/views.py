@@ -57,7 +57,7 @@ class Home(View):
 
         account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName", "instructorUserName"))
-        lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        lab_list = list(myLab.objects.values_list("labNumber", "labName", "taUserName"))
         contact_list = list(myContact.objects.values_list("userName","phoneNumber", "emailAddress"))
 
         if(request.session["userType"] == "Administrator"):
@@ -318,7 +318,7 @@ class AssignLabTa(View):
             newAssignment.save()
 
             lab = list(myLab.objects.filter(labNumber=request.POST["labNumber"]))[0]
-            lab.instructorUserName = request.POST["taUserName"]
+            lab.taUserName = request.POST["taUserName"]
             lab.save()
 
             lab_list = list(myLab.objects.values_list("labNumber", "labName"))
@@ -341,7 +341,7 @@ class DeleteLabTa(View):
                 errorMessage="Lab Assignment Not Found!"
 
             lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
-            lab.instructorUserName = "NOT SET"
+            lab.taUserName = "NOT SET"
             lab.save()
 
             request.session["error"] = errorMessage
