@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>TA Scheduler - Create Course</title>
+    <title>TA Scheduler - Assign Course Instructor</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -79,7 +79,7 @@
         </li>
 
         <!-- Nav Item - Course Creation -->
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href="/create-course">
                 <i class="fas fa-book-open"></i>
                 <span>Course</span></a>
@@ -101,7 +101,7 @@
         </div>
 
         <!-- Nav Item - Assign Instructor -->
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="#">
                 <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
                 <span>Course Instructor</span></a>
@@ -162,7 +162,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Create Course</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Assign Course Instructor</h1>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -175,23 +175,31 @@
                             <div class="col-lg-5">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Create a Course!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Assign A Course Instructor!</h1>
                                     </div>
-                                    <form class="user" action="/create-course/" method="post">
+                                    <form class="user" action="/assign-course-instructor/" method="post">
                                         {% csrf_token %}
                                         <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input required="true" maxlength="10" type="text" class="form-control"
-                                                       name="courseNumber"
-                                                       placeholder="Course Number">
+                                                <select class="form-control" name="courseNumber">
+                                                    <option value="Choose Course Number">Choose Course Number</option>
+                                                    {% for i in course_list %}
+                                                        <option value="{{ i.0 }}">{{ i.0 }} - {{ i.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div class="col-sm-6">
-                                                <input required="true" maxlength="20" type="text" class="form-control"
-                                                       name="courseName"
-                                                       placeholder="Course Name">
+                                                <select class="form-control" name="instructorUserName">
+                                                    <option value="Choose Instructor">Choose Instructor</option>
+                                                    {% for i in account_list %}
+                                                        {% if i.1 == "Instructor" %}
+                                                        <option value="{{ i.0 }}">{{ i.0 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-success btn-user btn-block">Create Course
+                                        <button type="submit" class="btn btn-success btn-user btn-block">Assign Course Instructor
                                         </button>
                                     </form>
                                 </div>
@@ -217,23 +225,22 @@
                                 </thead>
 
                                 <tbody>
-                                {% for i in course_list %}
+                                {% for i in assigned_course_list %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
-                                        <td>{{ i.1 }}</td>
-                                        <td>{{ i.2 }}</td>
-                                        <td>
-                                            {% if i.2 == "NOT SET" %}
-                                                <form action="/delete-course/" method="post">{% csrf_token %}
-                                                    <button type="submit" class="btn btn-success btn-user btn-block"
-                                                            name="deleteCourse" value="{{ i.0 }}">Delete Course
-                                                    </button>
-                                                    <input type="hidden" name="returnUrl" value="/create-course/">
-                                                </form>
-                                            {% else %}
-                                               Please Remove Assigned Instructor!
-
+                                        {% for j in course_list %}
+                                            {% if i.0 == j.0 %}
+                                                <td>{{ j.1 }}</td>
                                             {% endif %}
+                                            {% endfor %}
+
+                                        <td>{{ i.1 }}</td>
+                                        <td>
+                                            <form action="/delete-course-instructor/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-user btn-block"
+                                                        name="deleteCourseInstructor" value="{{ i.0 }}">Delete Course Instructor Assignment
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="/assign-course-instructor/"></form>
                                         </td>
                                     </tr>
                                 {% endfor %}

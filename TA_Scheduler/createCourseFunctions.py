@@ -29,7 +29,7 @@ class createCourseFunctions():
                 errorMessage = "Course Name Is Too Long!"
                 return errorMessage
             else:
-                c1 = myCourse(courseName=courseName, courseNumber=courseNumber)
+                c1 = myCourse(courseName=courseName, courseNumber=courseNumber, instructorUserName="NOT SET")
                 c1.save()
                 errorMessage = ""
                 return errorMessage

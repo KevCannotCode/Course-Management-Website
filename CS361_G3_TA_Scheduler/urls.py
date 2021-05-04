@@ -25,6 +25,9 @@ from TA_Scheduler.views import DeleteCourse
 from TA_Scheduler.views import CreateLab
 from TA_Scheduler.views import DeleteLab
 from TA_Scheduler.views import Profile
+from TA_Scheduler.views import AssignCourseInstructor
+from TA_Scheduler.views import DeleteCourseInstructor
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,5 +40,7 @@ urlpatterns = [
     path('create-lab/', CreateLab.as_view()),
     path('delete-lab/', DeleteLab.as_view()),
     path('logout/', Logout.as_view()),
-    path('profile/', Profile.as_view())
+    path('profile/', Profile.as_view()),
+    path('assign-course-instructor/', AssignCourseInstructor.as_view()),
+    path('delete-course-instructor/', DeleteCourseInstructor.as_view())
 ]

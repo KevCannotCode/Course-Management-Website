@@ -190,13 +190,13 @@
                                                        type="password" placeholder="Password">
                                             </div>
                                             <div class="col-sm-12">
-                                            <select class="form-control" name="userType">
-                                                <option value="Choose User Type">Choose User Type</option>
-                                                <option value="Administrator">Administrator</option>
-                                                <option value="Instructor">Instructor</option>
-                                                <option value="TA">TA</option>
-                                            </select>
-                                                </div>
+                                                <select class="form-control" name="userType">
+                                                    <option value="Choose User Type">Choose User Type</option>
+                                                    <option value="Administrator">Administrator</option>
+                                                    <option value="Instructor">Instructor</option>
+                                                    <option value="TA">TA</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <button type="submit" class="btn btn-danger btn-user btn-block">Create account
                                         </button>
@@ -231,6 +231,7 @@
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
                                         <td>{{ i.2 }}</td>
+
                                         {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
@@ -239,11 +240,26 @@
 
                                         {% endfor %}
                                         <td>
-                                            <form action="/delete-account/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-danger btn-user btn-block"
-                                                        name="deleteAccount" value="{{ i.0 }}">Delete Account
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/create-account/"></form>
+
+                                            {% if i.0 != userName %}
+                                                {% if i.0 in course_list.instructorUserName %}
+                                                    HELLO
+                                                    {% endif %}
+
+                                                <form action="/delete-account/" method="post">{% csrf_token %}
+                                                    <button type="submit"
+                                                            class="btn btn-danger btn-user btn-block"
+                                                            name="deleteAccount" value="{{ i.0 }}">Delete
+                                                        Account
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl"
+                                                           value="/create-account/"></form>
+
+
+                                                {% else %}
+                                                You cannot delete yourself!
+                                            {% endif %}
+
                                         </td>
                                     </tr>
                                 {% endfor %}
