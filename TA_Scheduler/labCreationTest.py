@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test import Client
 from .models import myLab
-from .createCourseFunctions import createLabFunctions
+from .createLabFunctions import createLabFunctions
 # Create your tests here.
 
 class TestCase_good_createLab(TestCase):
