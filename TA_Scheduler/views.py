@@ -11,6 +11,7 @@ from .myLogin import myLogin
 from django.contrib.auth import logout as auth_logout
 from .verifyLogin import verifyLogin
 from .models import myCourseInstructor
+from .models import myLabTA
 
 # Create your views here.
 class Login(View):
@@ -260,6 +261,88 @@ class DeleteCourseInstructor(View):
             course = list(myCourse.objects.filter(courseNumber=request.POST["deleteCourseInstructor"]))[0]
             course.instructorUserName = "NOT SET"
             course.save()
+
+            request.session["error"] = errorMessage
+            return redirect(request.POST["returnUrl"])
+
+
+
+
+class AssignLabTa(View):
+    def get(self,request):
+        userName = request.session["userName"]
+        if(verifyLogin.verifyLogin(userName, request) == False):
+            return render(request, "logout.html", {})
+
+
+        errorMessage=request.session["error"]
+        request.session["error"] = ""
+
+        lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        account_list = list(myAccount.objects.values_list("userName", "userType"))
+        assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
+        return render(request,"assign-lab-ta.html",{"assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if (verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+
+            errorMessage = ""
+
+            labNumber = request.POST["labNumber"]
+            if not(labNumber.isnumeric()):
+                errorMessage="Invalid Lab Number!"
+            else:
+                existingLabTa = list(myLabTA.objects.filter(labNumber=request.POST["labNumber"]))
+                existingLab = list(myLab.objects.filter(labNumber=labNumber))
+                existingTa = list(myAccount.objects.filter(userName=request.POST["taUserName"], userType="TA"))
+                if((len(existingLab) == 0) and (len(existingLab) == 0)):
+                    errorMessage="Invalid Lab Number And TA Username!"
+                elif((len(existingLab) == 0)):
+                    errorMessage="Invalid Lab Number!"
+                elif((len(existingTa) == 0)):
+                    errorMessage="Invalid TA Username!"
+                elif ((len(existingLabTa) != 0)):
+                    errorMessage="This Lab Already Has A TA!"
+            if(errorMessage is not ""):
+                lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+                account_list = list(myAccount.objects.values_list("userName", "userType"))
+                assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
+
+                return render(request, "assign-lab-ta.html", {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+
+
+            newAssignment = myLabTA(labNumber=request.POST["labNumber"], taUserName=request.POST["taUserName"])
+            newAssignment.save()
+
+            lab = list(myLab.objects.filter(labNumber=request.POST["labNumber"]))[0]
+            lab.instructorUserName = request.POST["taUserName"]
+            lab.save()
+
+            lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+            account_list = list(myAccount.objects.values_list("userName", "userType"))
+            assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
+
+            return render(request,"assign-lab-ta.html", {"assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "errorMessage":errorMessage, "userName":userName})
+
+class DeleteLabTa(View):
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if(verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+            errorMessage=""
+            deleteLabTa = list(myLabTA.objects.filter(labNumber=request.POST["deleteLabTa"]))
+            if(len(deleteLabTa) != 0):
+                deleteLabTa[0].delete()
+            else:
+                errorMessage="Lab Assignment Not Found!"
+
+            lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
+            lab.instructorUserName = "NOT SET"
+            lab.save()
 
             request.session["error"] = errorMessage
             return redirect(request.POST["returnUrl"])

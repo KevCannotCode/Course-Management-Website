@@ -31,7 +31,7 @@ class myCourseInstructor(models.Model):
 class myLabTA(models.Model):
     labNumber = models.IntegerField()
     taUserName = models.CharField(max_length=40)
-    labCount = models.IntegerField()
+    #labCount = models.IntegerField()
 
 class labToCourse(models.Model):
     labNumber = models.IntegerField()
