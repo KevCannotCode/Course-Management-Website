@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test import Client
 from .models import myLab
 from .models import myCourse
-from .labToCourse import labToCourse
+from .assignLabToCourse import labToCourse
 
 class labToCourse_acceptance_test(TestCase):
     def setUp(self):
