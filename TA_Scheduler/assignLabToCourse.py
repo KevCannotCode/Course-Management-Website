@@ -1,6 +1,7 @@
 from .models import labToCourse
 from .models import myLab
 from .models import myCourse
+
 class assignLabToCourse:
     def assignLabToCourse(labNumber, courseNumber):
         #check the validity of the inputs
