@@ -33,6 +33,6 @@ class createLabFunctions:
             return errorMessage
 
         errorMessage = ""
-        l1 = myLab(labNumber=labNumber, labName=labName)
+        l1 = myLab(labNumber=labNumber, labName=labName, taUserName="NOT SET")
         l1.save()
         return errorMessage

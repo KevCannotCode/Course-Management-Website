@@ -114,6 +114,13 @@
                 <span>Lab TA</span></a>
         </li>
 
+                <!-- Nav Item - Assign Lab to Course -->
+        <li class="nav-item">
+            <a class="nav-link" href="/assign-course-lab/">
+                <i class="fas fa-flask"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
+                <span>Course Lab</span></a>
+        </li>
+
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
@@ -217,7 +224,8 @@
                                 <tr>
                                     <th>Lab Number</th>
                                     <th>Lab Name</th>
-                                    <th style="width: 20%;">Delete</th>
+                                    <th>TA</th>
+                                    <th style="width: 20%;">Delete Lab</th>
                                 </tr>
                                 </thead>
 
@@ -226,7 +234,20 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
-                                    <td> <form action="/delete-lab/" method="post">{% csrf_token %}<button type="submit" class="btn btn-info btn-user btn-block" name="deleteLab" value="{{ i.0 }}">Delete Lab</button><input type="hidden" name="returnUrl" value="/create-lab/"></form></td>
+                                        <td>{{ i.2 }}</td>
+                                        <td>
+                                            {% if i.2 == "NOT SET" %}
+                                                <form action="/delete-lab/" method="post">{% csrf_token %}
+                                                    <button type="submit" class="btn btn-info btn-user btn-block"
+                                                            name="deleteLab" value="{{ i.0 }}">Delete Lab
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl" value="/create-lab/">
+                                                </form>
+                                            {% else %}
+                                               Please Remove Assigned TA!
+
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

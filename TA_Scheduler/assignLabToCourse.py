@@ -49,7 +49,7 @@ class assignLabToCourse:
     def retrieveInDatabase(labNumber, courseNumber):
         errorMessage= ""
         try:
-            lab = myLab.objects.filter(LabNumber=labNumber)
+            lab = myLab.objects.filter(labNumber=labNumber)
         except myLab.DoesNotExist:
             errorMessage = "This Lab Doesn't Exist!"
         try:

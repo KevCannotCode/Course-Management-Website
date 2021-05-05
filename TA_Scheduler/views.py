@@ -12,6 +12,8 @@ from django.contrib.auth import logout as auth_logout
 from .verifyLogin import verifyLogin
 from .models import myCourseInstructor
 from .models import myLabTA
+from .models import labToCourse
+from .assignLabToCourse import assignLabToCourse
 
 # Create your views here.
 class Login(View):
@@ -138,7 +140,7 @@ class CreateLab(View):
         userName = request.session["userName"]
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
-        lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        lab_list = list(myLab.objects.values_list("labNumber", "labName", "taUserName"))
         return render(request,"create-lab.html",{"lab_list":lab_list, "userName":userName, "errorMessage":""})
 
     def post(self,request):
@@ -147,7 +149,7 @@ class CreateLab(View):
             if (verifyLogin.verifyLogin(userName, request) == False):
                 return render(request, "logout.html", {})
             errorMessage = createLabFunctions.createLab(request.POST["labNumber"], request.POST["labName"])
-            lab_list = list(myLab.objects.values_list("labNumber","labName"))
+            lab_list = list(myLab.objects.values_list("labNumber", "labName", "taUserName"))
             return render(request,"create-lab.html", {"lab_list":lab_list, "errorMessage":errorMessage, "userName":userName})
 
 class DeleteLab(View):
@@ -343,6 +345,59 @@ class DeleteLabTa(View):
             lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
             lab.taUserName = "NOT SET"
             lab.save()
+
+            request.session["error"] = errorMessage
+            return redirect(request.POST["returnUrl"])
+
+class AssignCourseLab(View):
+    def get(self,request):
+        userName = request.session["userName"]
+        if(verifyLogin.verifyLogin(userName, request) == False):
+            return render(request, "logout.html", {})
+
+
+        errorMessage=request.session["error"]
+        request.session["error"] = ""
+
+        course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
+        lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+        course_lab_list = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+
+        assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
+        return render(request,"assign-course-lab.html",{"assigned_course_list":assigned_course_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "errorMessage":errorMessage, "course_lab_list":course_lab_list})
+
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if (verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+
+            errorMessage = ""
+
+            errorMessage = assignLabToCourse.assignLabToCourse(request.POST["labNumber"], request.POST["courseNumber"])
+
+            course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
+            lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+            course_lab_list = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+
+            assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
+            return render(request, "assign-course-lab.html",{"assigned_course_list": assigned_course_list, "course_list": course_list,"lab_list": lab_list, "userName": userName, "errorMessage": errorMessage, "course_lab_list":course_lab_list})
+
+class DeleteCourseLab(View):
+    def post(self,request):
+        if len(request.POST) != 0:
+            userName = request.session["userName"]
+            if(verifyLogin.verifyLogin(userName, request) == False):
+                return render(request, "logout.html", {})
+            errorMessage=""
+            print(request.POST["deleteCourseNumber"])
+            print(request.POST["deleteLabNumber"])
+            deleteCourseLab = list(labToCourse.objects.filter(courseNumber= request.POST["deleteCourseNumber"], labNumber=request.POST["deleteLabNumber"]))
+            if(len(deleteCourseLab) != 0):
+                deleteCourseLab[0].delete()
+            else:
+                errorMessage="Course Lab Assignment Not Found!"
+
 
             request.session["error"] = errorMessage
             return redirect(request.POST["returnUrl"])
