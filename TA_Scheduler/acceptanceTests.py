@@ -201,6 +201,8 @@ class TestCase_badInput_courseName_tooLong_createCourse(TestCase):
 class TestCase_good_createLab(TestCase):
     def setUp(self):
         self.client = Client()
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_good_createLab(self):
         response = self.client.post("/create-lab/", {"labNumber": "1", "labName": "COMPSCI"})
@@ -215,10 +217,12 @@ class TestCase_duplicate_createLab(TestCase):
     def setUp(self):
         self.client = Client()
         self.compsciLab = myLab.objects.create(labNumber="1", labName="COMPSCI")
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_duplicate_createLab(self):
         response = self.client.post("/create-lab/", {"labNumber": "1", "labName": "COMPSCI"})
-        self.assertEqual("Lab Number Already Exists", response.context["errorMessage"],"Creating a duplicate lab COMPSCI with number 1. Expected errorMessage = 'Lab Number Already Exists'")
+        self.assertEqual("Lab Number Already Exists!", response.context["errorMessage"],"Creating a duplicate lab COMPSCI with number 1. Expected errorMessage = 'Lab Number Already Exists'")
 
     class TestCase_badInput_createLab(TestCase):
         def setUp(self):
@@ -236,8 +240,10 @@ class labToCourse_acceptance_test(TestCase):
         self.lab = myLab.objects.create(labName= "MATHLAB", labNumber="202", taUserName= "TA")
         self.course = myCourse.objects.create(courseName= "MATH", courseNumber= 1,instructorUsername= "admin")
 
+
     def test_good_assign(self):
         response = self.client.post("/assign-LabToCourse/", {"labNumber"})
+
     def test_empty_arguments(self):
         self.assertEquals()
 

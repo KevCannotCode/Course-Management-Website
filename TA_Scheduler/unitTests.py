@@ -242,7 +242,7 @@ class TestCase_duplicate_createLab(TestCase):
 
     def test_unit_duplicate_createCourse(self):
         errorMessage = createLabFunctions.createLab("1", "COMPSCI")
-        self.assertEqual("Lab Number Already Exists", errorMessage,"Creating a duplicate lab COMPSCI with number 1. Expected errorMessage = 'Lab Number Already Exists'")
+        self.assertEqual("Lab Number Already Exists!", errorMessage,"Creating a duplicate lab COMPSCI with number 1. Expected errorMessage = 'Lab Number Already Exists'")
 
 class TestCase_badInput_createLab(TestCase):
     def setUp(self):
@@ -250,7 +250,7 @@ class TestCase_badInput_createLab(TestCase):
 
     def test_unit_badInput_createLab(self):
         errorMessage = createLabFunctions.createLab("asdf", "COMPSCI")
-        self.assertEqual("Lab Number Isn't Numeric", errorMessage,
+        self.assertEqual("Lab Number Isn't Numeric!", errorMessage,
                          "Creating a bad input lab COMPSCI with number asdf. Expected errorMessage = 'Lab Number Isn't Numeric'")
 
 
