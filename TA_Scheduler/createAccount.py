@@ -2,7 +2,7 @@ from .models import myAccount
 from .models import myContact
 
 class createAccountFunctions():
-    def createAccount(userName, password,userType):
+    def createAccount(userName, password, userType):
         errorMessage = ""
         print(userType)
         #check size of inputted username and password

@@ -21,16 +21,16 @@ class TestCase_empty_createCourse(TestCase):
         errorMessage = createCourseFunctions.createCourse("", "")
         self.assertEqual("No Course Number or Course Name Provided!", errorMessage,"Creating a new course with empty fields. Expected errorMessage = 'No Course Number or Course Name Provided!'")
 
-class TestCase_empty_courseNumber_createCourse(TestCase):
+class TestCase_empty_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
         self.admin = myAccount.objects.create(userName="admin", password="password")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
-    def test_acceptance_empty_courseNumber_createCourse(self):
-        response = self.client.post("/create-course/", {"courseNumber": "", "courseName": "COMPSCI"})
+    def test_acceptance_empty_createCourse(self):
+        response = self.client.post("/create-course/", {"courseNumber": "", "courseName": ""})
         course_list = response.context["course_list"]
-        self.assertEqual("No Course Number Provided!", response.context["errorMessage"],"Creating a new course COMPSCI with number empty. Expected errorMessage = 'No Course Number Provided!'")
+        self.assertEqual("No Course Number or Course Name Provided!", response.context["errorMessage"],"Creating a new course with empty fields. Expected errorMessage = 'No Course Number or Course Name Provided!'")
 
     def test_unit_empty_courseNumber_createCourse(self):
         errorMessage = createCourseFunctions.createCourse("", "COMPSCI")

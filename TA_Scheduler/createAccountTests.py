@@ -31,6 +31,8 @@ class CreateNewAccount(TestCase):
         resp = self.myClient.post("/create-account/", {"userName": "", "password": "randomPassword"}, follow=True)
         self.assertEqual("No Username Provided!", resp.context["errorMessage"], "system allowed an invalid input for account creation")
 
+
+
     def test_unitTest_newAccount(self):
         errorMessage = createAccountFunctions.createAccount("williamsg", "williamsPassword")
         self.assertEqual("", errorMessage, "Failed to create account with valid inputs, username: williamsg password: williamsPassword")
