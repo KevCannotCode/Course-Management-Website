@@ -8,12 +8,5 @@
       <jdbc-url>jdbc:sqlite:C:\Users\vortex\PycharmProjects\CS361-TA-Scheduler\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="db [2]" uuid="2d021539-72b1-43ad-ab6c-461a33de9321">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Cjshu\PycharmProjects\CS361-TA-Scheduler\db.sqlite3</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
   </component>
 </project>
