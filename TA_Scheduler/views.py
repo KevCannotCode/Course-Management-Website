@@ -54,8 +54,8 @@ class Home(View):
 
 
         #errorMessage=""
-        #errorMessage=request.session["error"]
-        #request.session["error"] = ""
+        errorMessage=request.session["error"]
+        request.session["error"] = ""
 
         account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName", "instructorUserName"))
@@ -63,9 +63,9 @@ class Home(View):
         contact_list = list(myContact.objects.values_list("userName","phoneNumber", "emailAddress"))
 
         if(request.session["userType"] == "Administrator"):
-            return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":""})
+            return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":errorMessage})
         elif(request.session["userType"] == "Instructor"):
-            return render(request, "home-instructor.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":""})
+            return render(request, "home-instructor.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":errorMessage})
 
 
 
@@ -78,7 +78,15 @@ class CreateAccount(View):
         account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
         contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName", "instructorUserName"))
-        return render(request,"create-account.html",{"course_list":course_list, "account_list":account_list, "userName":userName, "errorMessage":"", "contact_list":contact_list})
+
+
+        if(request.session["userType"] == "Administrator"):
+            return render(request,"create-account.html",{"course_list":course_list, "account_list":account_list, "userName":userName, "errorMessage":"", "contact_list":contact_list})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
+
+
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -89,7 +97,14 @@ class CreateAccount(View):
             account_list = list(myAccount.objects.values_list("userName", "password", "userType"))
             contact_list = list(myContact.objects.values_list("userName", "phoneNumber", "emailAddress"))
             course_list = list(myCourse.objects.values_list("courseNumber", "courseName", "instructorUserName"))
-            return render(request,"create-account.html",{"course_list":course_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage, "contact_list":contact_list})
+
+            if (request.session["userType"] == "Administrator"):
+                return render(request, "create-account.html",
+                              {"course_list": course_list, "account_list": account_list, "userName": userName,
+                               "errorMessage": errorMessage, "contact_list": contact_list})
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class DeleteAccount(View):
     def post(self,request):
@@ -98,13 +113,17 @@ class DeleteAccount(View):
             if(verifyLogin.verifyLogin(userName, request) == False):
                 return render(request, "logout.html", {})
 
+            if (request.session["userType"] == "Administrator"):
+                deleteAccount = list(myAccount.objects.filter(userName=request.POST["deleteAccount"]))[0]
+                deleteAccount.delete()
+                deleteContact = list(myContact.objects.filter(userName=request.POST["deleteAccount"]))[0]
+                deleteContact.delete()
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 
-            deleteAccount = list(myAccount.objects.filter(userName=request.POST["deleteAccount"]))[0]
-            deleteAccount.delete()
-            deleteContact = list(myContact.objects.filter(userName=request.POST["deleteAccount"]))[0]
-            deleteContact.delete()
-            return redirect(request.POST["returnUrl"])
 
 class CreateCourse(View):
     def get(self,request):
@@ -112,7 +131,12 @@ class CreateCourse(View):
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName", "instructorUserName"))
-        return render(request,"create-course.html",{"course_list":course_list, "userName":userName, "errorMessage":""})
+
+        if (request.session["userType"] == "Administrator"):
+            return render(request,"create-course.html",{"course_list":course_list, "userName":userName, "errorMessage":""})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -121,7 +145,11 @@ class CreateCourse(View):
                 return render(request, "logout.html", {})
             errorMessage = createCourseFunctions.createCourse(request.POST["courseNumber"], request.POST["courseName"])
             course_list = list(myCourse.objects.values_list("courseNumber","courseName", "instructorUserName"))
-            return render(request,"create-course.html", {"course_list":course_list, "errorMessage":errorMessage, "userName":userName})
+            if (request.session["userType"] == "Administrator"):
+                return render(request,"create-course.html", {"course_list":course_list, "errorMessage":errorMessage, "userName":userName})
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class DeleteCourse(View):
     def post(self,request):
@@ -132,8 +160,11 @@ class DeleteCourse(View):
 
             deleteCourse = list(myCourse.objects.filter(courseNumber=request.POST["deleteCourse"]))[0]
             deleteCourse.delete()
-
-            return redirect(request.POST["returnUrl"])
+            if (request.session["userType"] == "Administrator"):
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class CreateLab(View):
     def get(self,request):
@@ -141,7 +172,11 @@ class CreateLab(View):
         if(verifyLogin.verifyLogin(userName, request) == False):
             return render(request, "logout.html", {})
         lab_list = list(myLab.objects.values_list("labNumber", "labName", "taUserName"))
-        return render(request,"create-lab.html",{"lab_list":lab_list, "userName":userName, "errorMessage":""})
+        if (request.session["userType"] == "Administrator"):
+            return render(request,"create-lab.html",{"lab_list":lab_list, "userName":userName, "errorMessage":""})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -150,7 +185,11 @@ class CreateLab(View):
                 return render(request, "logout.html", {})
             errorMessage = createLabFunctions.createLab(request.POST["labNumber"], request.POST["labName"])
             lab_list = list(myLab.objects.values_list("labNumber", "labName", "taUserName"))
-            return render(request,"create-lab.html", {"lab_list":lab_list, "errorMessage":errorMessage, "userName":userName})
+            if (request.session["userType"] == "Administrator"):
+                return render(request,"create-lab.html", {"lab_list":lab_list, "errorMessage":errorMessage, "userName":userName})
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class DeleteLab(View):
     def post(self,request):
@@ -158,10 +197,13 @@ class DeleteLab(View):
             userName = request.session["userName"]
             if(verifyLogin.verifyLogin(userName, request) == False):
                 return render(request, "logout.html", {})
-
-            deleteLab = list(myLab.objects.filter(labNumber=request.POST["deleteLab"]))[0]
-            deleteLab.delete()
-            return redirect(request.POST["returnUrl"])
+            if (request.session["userType"] == "Administrator"):
+                deleteLab = list(myLab.objects.filter(labNumber=request.POST["deleteLab"]))[0]
+                deleteLab.delete()
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class Profile(View):
     def get(self,request):
@@ -170,7 +212,11 @@ class Profile(View):
             return render(request, "logout.html", {})
 
         contact = list(myContact.objects.filter(userName=userName))[0]
-        return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})
+        if (request.session["userType"] == "Administrator"):
+            return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})
+        elif (request.session["userType"] == "Instructor"):
+            return render(request, "profile-instructor.html", {"userName": userName, "phoneNumber": contact.phoneNumber,
+                                                    "emailAddress": contact.emailAddress})
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -182,7 +228,13 @@ class Profile(View):
             contact.phoneNumber = request.POST["phoneNumber"]
             contact.emailAddress = request.POST["emailAddress"]
             contact.save()
-            return render(request, "profile.html", {"userName":userName, "phoneNumber":contact.phoneNumber, "emailAddress":contact.emailAddress})
+            if (request.session["userType"] == "Administrator"):
+                return render(request, "profile.html", {"userName": userName, "phoneNumber": contact.phoneNumber,
+                                                        "emailAddress": contact.emailAddress})
+            elif (request.session["userType"] == "Instructor"):
+                return render(request, "profile-instructor.html",
+                              {"userName": userName, "phoneNumber": contact.phoneNumber,
+                               "emailAddress": contact.emailAddress})
 
 
 class AssignCourseInstructor(View):
@@ -198,7 +250,11 @@ class AssignCourseInstructor(View):
         course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
         account_list = list(myAccount.objects.values_list("userName", "userType"))
         assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-        return render(request,"assign-course-instructor.html",{"assigned_course_list":assigned_course_list, "course_list":course_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+        if (request.session["userType"] == "Administrator"):
+            return render(request,"assign-course-instructor.html",{"assigned_course_list":assigned_course_list, "course_list":course_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -229,9 +285,11 @@ class AssignCourseInstructor(View):
                 course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
                 account_list = list(myAccount.objects.values_list("userName", "userType"))
                 assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-
-                return render(request, "assign-course-instructor.html", {"assigned_course_list": assigned_course_list, "course_list": course_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
-
+                if (request.session["userType"] == "Administrator"):
+                    return render(request, "assign-course-instructor.html", {"assigned_course_list": assigned_course_list, "course_list": course_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+                else:
+                    request.session["error"] = "Unauthorized!"
+                    return redirect("/home/")
 
             newAssignment = myCourseInstructor(courseNumber=request.POST["courseNumber"], instructorUserName=request.POST["instructorUserName"])
             newAssignment.save()
@@ -243,8 +301,11 @@ class AssignCourseInstructor(View):
             course_list = list(myCourse.objects.values_list("courseNumber","courseName"))
             account_list = list(myAccount.objects.values_list("userName", "userType"))
             assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-
-            return render(request,"assign-course-instructor.html", {"assigned_course_list":assigned_course_list, "course_list":course_list, "account_list":account_list, "errorMessage":errorMessage, "userName":userName})
+            if (request.session["userType"] == "Administrator"):
+                return render(request,"assign-course-instructor.html", {"assigned_course_list":assigned_course_list, "course_list":course_list, "account_list":account_list, "errorMessage":errorMessage, "userName":userName})
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class DeleteCourseInstructor(View):
     def post(self,request):
@@ -260,12 +321,15 @@ class DeleteCourseInstructor(View):
             else:
                 errorMessage="Course Assignment Not Found!"
 
-            course = list(myCourse.objects.filter(courseNumber=request.POST["deleteCourseInstructor"]))[0]
-            course.instructorUserName = "NOT SET"
-            course.save()
-
-            request.session["error"] = errorMessage
-            return redirect(request.POST["returnUrl"])
+            if (request.session["userType"] == "Administrator"):
+                course = list(myCourse.objects.filter(courseNumber=request.POST["deleteCourseInstructor"]))[0]
+                course.instructorUserName = "NOT SET"
+                course.save()
+                request.session["error"] = errorMessage
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 
 
@@ -290,8 +354,6 @@ class AssignLabTa(View):
         elif(request.session["userType"] == "Instructor"):
             instructor_courses = list(myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
             lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
-            print(instructor_courses)
-            print(lab_courses)
             return render(request,"assign-lab-ta-instructor.html",{"lab_courses":lab_courses, "instructor_courses":instructor_courses, "assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
 
     def post(self,request):
@@ -326,8 +388,13 @@ class AssignLabTa(View):
                     print("Admin")
                     return render(request, "assign-lab-ta.html",{"assigned_lab_list": assigned_lab_list, "lab_list": lab_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
                 elif (request.session["userType"] == "Instructor"):
-                    print("Instructor")
-                    return render(request, "assign-lab-ta-instructor.html", {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+                    instructor_courses = list(
+                        myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
+                    lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+                    return render(request, "assign-lab-ta-instructor.html",
+                                  {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
+                                   "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+                                   "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
 
             newAssignment = myLabTA(labNumber=request.POST["labNumber"], taUserName=request.POST["taUserName"])
             newAssignment.save()
@@ -346,10 +413,13 @@ class AssignLabTa(View):
                               {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
                                "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
             elif (request.session["userType"] == "Instructor"):
-                print("Instructor")
+                instructor_courses = list(
+                    myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
+                lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
                 return render(request, "assign-lab-ta-instructor.html",
-                              {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
-                               "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+                              {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
+                               "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+                               "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
 
 class DeleteLabTa(View):
     def post(self,request):
@@ -364,12 +434,17 @@ class DeleteLabTa(View):
             else:
                 errorMessage="Lab Assignment Not Found!"
 
-            lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
-            lab.taUserName = "NOT SET"
-            lab.save()
+            if (request.session["userType"] == "Administrator"):
+                lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
+                lab.taUserName = "NOT SET"
+                lab.save()
 
-            request.session["error"] = errorMessage
-            return redirect(request.POST["returnUrl"])
+                request.session["error"] = errorMessage
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
+
 
 class AssignCourseLab(View):
     def get(self,request):
@@ -386,7 +461,11 @@ class AssignCourseLab(View):
         course_lab_list = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
 
         assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-        return render(request,"assign-course-lab.html",{"assigned_course_list":assigned_course_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "errorMessage":errorMessage, "course_lab_list":course_lab_list})
+        if (request.session["userType"] == "Administrator"):
+            return render(request,"assign-course-lab.html",{"assigned_course_list":assigned_course_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "errorMessage":errorMessage, "course_lab_list":course_lab_list})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -403,7 +482,11 @@ class AssignCourseLab(View):
             course_lab_list = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
 
             assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-            return render(request, "assign-course-lab.html",{"assigned_course_list": assigned_course_list, "course_list": course_list,"lab_list": lab_list, "userName": userName, "errorMessage": errorMessage, "course_lab_list":course_lab_list})
+            if (request.session["userType"] == "Administrator"):
+                return render(request, "assign-course-lab.html",{"assigned_course_list": assigned_course_list, "course_list": course_list,"lab_list": lab_list, "userName": userName, "errorMessage": errorMessage, "course_lab_list":course_lab_list})
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")
 
 class DeleteCourseLab(View):
     def post(self,request):
@@ -420,6 +503,9 @@ class DeleteCourseLab(View):
             else:
                 errorMessage="Course Lab Assignment Not Found!"
 
-
-            request.session["error"] = errorMessage
-            return redirect(request.POST["returnUrl"])
+            if (request.session["userType"] == "Administrator"):
+                request.session["error"] = errorMessage
+                return redirect(request.POST["returnUrl"])
+            else:
+                request.session["error"] = "Unauthorized!"
+                return redirect("/home/")

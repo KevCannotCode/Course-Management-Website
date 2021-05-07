@@ -162,11 +162,12 @@
                                                             {% if i.0 == j.0 %}
                                                                 {% for k in lab_list %}
                                                                     {% if j.1 == k.0 %}
-                                                        <option value="{{ j.1 }}">{{ j.1 }} - {{ k.1 }}</option>
+                                                                        <option value="{{ j.1 }}">{{ j.1 }}
+                                                                            - {{ k.1 }}</option>
                                                                     {% endif %}
                                                                 {% endfor %}
-                                                                {% endif %}
-                                                            {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -175,7 +176,7 @@
                                                     <option value="Choose TA">Choose TA</option>
                                                     {% for i in account_list %}
                                                         {% if i.1 == "TA" %}
-                                                        <option value="{{ i.0 }}">{{ i.0 }}</option>
+                                                            <option value="{{ i.0 }}">{{ i.0 }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -209,20 +210,39 @@
                                 <tbody>
                                 {% for i in assigned_lab_list %}
                                     <tr>
+
+
                                         <td>{{ i.0 }}</td>
                                         {% for j in lab_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
                                             {% endif %}
-                                            {% endfor %}
+                                        {% endfor %}
 
                                         <td>{{ i.1 }}</td>
                                         <td>
+                                            {% for j in instructor_courses %}
+                                                {% for k in lab_courses %}
+                                                    {% if j.0 == k.0 %}
+                                                        {% for l in lab_list %}
+                                                            {% if k.1 == l.0 %}
+                                                                {% if i.0 == k.1 %}
+
                                             <form action="/delete-lab-ta/" method="post">{% csrf_token %}
                                                 <button type="submit" class="btn btn-info btn-user btn-block"
                                                         name="deleteLabTa" value="{{ i.0 }}">Delete Lab TA Assignment
                                                 </button>
                                                 <input type="hidden" name="returnUrl" value="/assign-lab-ta/"></form>
+
+                                                                {% endif %}
+
+                                                            {% endif %}
+
+                                                        {% endfor %}
+
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
                                         </td>
                                     </tr>
                                 {% endfor %}
