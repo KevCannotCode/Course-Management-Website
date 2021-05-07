@@ -66,60 +66,20 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Create
-        </div>
-
-        <!-- Nav Item - Account Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-account">
-                <i class="fas fa-user-circle"></i>
-                <span>Account</span></a>
-        </li>
-
-        <!-- Nav Item - Course Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-course">
-                <i class="fas fa-book-open"></i>
-                <span>Course</span></a>
-        </li>
-
-        <!-- Nav Item - Section Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-lab">
-                <i class="fas fa-flask"></i>
-                <span>Lab</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
 
         <!-- Heading -->
         <div class="sidebar-heading">
             Assign
         </div>
 
-        <!-- Nav Item - Assign Instructor -->
-        <li class="nav-item">
-            <a class="nav-link" href="/assign-course-instructor/">
-                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
-                <span>Course Instructor</span></a>
-        </li>
 
         <!-- Nav Item - Assign TA -->
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="/assign-lab-ta/">
                 <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-flask"></i>
                 <span>Lab TA</span></a>
         </li>
 
-        <!-- Nav Item - Assign Lab to Course -->
-        <li class="nav-item active">
-            <a class="nav-link" href="/assign-course-lab/">
-                <i class="fas fa-flask"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
-                <span>Course Lab</span></a>
-        </li>
 
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
@@ -176,7 +136,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Assign Course Lab</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Assign Lab TA</h1>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -189,30 +149,39 @@
                             <div class="col-lg-5">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Assign A Course Lab!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Assign A Lab TA!</h1>
                                     </div>
-                                    <form class="user" action="/assign-course-lab/" method="post">
+                                    <form class="user" action="/assign-lab-ta/" method="post">
                                         {% csrf_token %}
                                         <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <select class="form-control" name="courseNumber">
-                                                    <option value="Choose Course Number">Choose Course Number</option>
-                                                    {% for i in course_list %}
-                                                        <option value="{{ i.0 }}">{{ i.0 }} - {{ i.1 }}</option>
+                                                <select class="form-control" name="labNumber">
+                                                    <option value="Choose Lab Number">Choose Lab Number</option>
+                                                    {% for i in instructor_courses %}
+                                                        {% for j in lab_courses %}
+                                                            {% if i.0 == j.0 %}
+                                                                {% for k in lab_list %}
+                                                                    {% if j.1 == k.0 %}
+                                                        <option value="{{ j.1 }}">{{ j.1 }} - {{ k.1 }}</option>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                             <div class="col-sm-6">
-                                                <select class="form-control" name="labNumber">
-                                                    <option value="Choose Lab Number">Choose Lab Number</option>
-                                                    {% for i in lab_list %}
-                                                        <option value="{{ i.0 }}">{{ i.0 }} - {{ i.1 }}</option>
+                                                <select class="form-control" name="taUserName">
+                                                    <option value="Choose TA">Choose TA</option>
+                                                    {% for i in account_list %}
+                                                        {% if i.1 == "TA" %}
+                                                        <option value="{{ i.0 }}">{{ i.0 }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-warning btn-user btn-block">Assign Course
-                                            Lab
+                                        <button type="submit" class="btn btn-info btn-user btn-block">Assign Lab TA
                                         </button>
                                     </form>
                                 </div>
@@ -223,46 +192,37 @@
                 <!-- Courses Table -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-warning">Courses & Labs</h6>
+                        <h6 class="m-0 font-weight-bold text-info">Labs</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="courseData" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>Course Number</th>
-                                    <th>Course Name</th>
                                     <th>Lab Number</th>
                                     <th>Lab Name</th>
-
-                                    <th style="width: 20%;">Delete Course Assignment</th>
+                                    <th>TA</th>
+                                    <th style="width: 20%;">Delete Lab TA Assignment</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                {% for i in course_lab_list %}
+                                {% for i in assigned_lab_list %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
-                                        {% for j in course_list %}
+                                        {% for j in lab_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
                                             {% endif %}
-                                        {% endfor %}
+                                            {% endfor %}
+
                                         <td>{{ i.1 }}</td>
-                                        {% for j in lab_list %}
-                                            {% if i.1 == j.0 %}
-                                                <td>{{ j.1 }}</td>
-                                            {% endif %}
-                                        {% endfor %}
                                         <td>
-                                            <form action="/delete-course-lab/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-warning btn-user btn-block"
-                                                        name="deleteCourseNumber" value="{{ i.0 }}">Delete Course Lab
-                                                    Assignment
+                                            <form action="/delete-lab-ta/" method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-info btn-user btn-block"
+                                                        name="deleteLabTa" value="{{ i.0 }}">Delete Lab TA Assignment
                                                 </button>
-                                                <input type="hidden" name="deleteLabNumber" value="{{ i.1 }}">
-                                                <input type="hidden" name="returnUrl" value="/assign-course-lab/">
-                                            </form>
+                                                <input type="hidden" name="returnUrl" value="/assign-lab-ta/"></form>
                                         </td>
                                     </tr>
                                 {% endfor %}

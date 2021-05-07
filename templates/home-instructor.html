@@ -54,47 +54,20 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Create
-        </div>
-
-
-        <!-- Nav Item - Account Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-account">
-                <i class="fas fa-user-circle"></i>
-                <span>Account</span></a>
-        </li>
-
-        <!-- Nav Item - Course Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-course">
-                <i class="fas fa-book-open"></i>
-                <span>Course</span></a>
-        </li>
-
-        <!-- Nav Item - Lab Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-lab">
-                <i class="fas fa-flask"></i>
-                <span>Lab</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
 
         <!-- Heading -->
         <div class="sidebar-heading">
             Assign
         </div>
 
-        <!-- Nav Item - Assign Instructor -->
+
+        <!-- Nav Item - Assign TA -->
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
-                <span>Course Instructor</span></a>
+            <a class="nav-link" href="/assign-lab-ta/">
+                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-flask"></i>
+                <span>Lab TA</span></a>
         </li>
+
 
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
@@ -233,7 +206,7 @@
                                     <th>User Type</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th style="width: 20%;">Delete</th>
+                                    <th style="width: 20%;">Delete Account</th>
 
                                 </tr>
                                 </thead>
@@ -243,6 +216,7 @@
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
                                         <td>{{ i.2 }}</td>
+
                                         {% for j in contact_list %}
                                             {% if i.0 == j.0 %}
                                                 <td>{{ j.1 }}</td>
@@ -251,11 +225,26 @@
 
                                         {% endfor %}
                                         <td>
-                                            <form action="/delete-account/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-danger btn-user btn-block"
-                                                        name="deleteAccount" value="{{ i.0 }}">Delete Account
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+
+                                            {% if i.0 != userName %}
+                                                {% if i.0 in course_list.instructorUserName %}
+                                                    HELLO
+                                                    {% endif %}
+
+                                                <form action="/delete-account/" method="post">{% csrf_token %}
+                                                    <button type="submit"
+                                                            class="btn btn-danger btn-user btn-block"
+                                                            name="deleteAccount" value="{{ i.0 }}">Delete
+                                                        Account
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl"
+                                                           value="/home/"></form>
+
+
+                                                {% else %}
+                                                You cannot delete yourself!
+                                            {% endif %}
+
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -278,26 +267,30 @@
                                     <th>Course Number</th>
                                     <th>Course Name</th>
                                     <th>Instructor</th>
-                                    <th style="width: 20%;">Delete</th>
+                                    <th style="width: 20%;">Delete Course</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 {% for i in course_list %}
-                                    {% if i.2 == userName %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
                                         <td>{{ i.2 }}</td>
                                         <td>
-                                            <form action="/delete-course/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-success btn-user btn-block"
-                                                        name="deleteCourse" value="{{ i.0 }}">Delete Course
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                            {% if i.2 == "NOT SET" %}
+                                                <form action="/delete-course/" method="post">{% csrf_token %}
+                                                    <button type="submit" class="btn btn-success btn-user btn-block"
+                                                            name="deleteCourse" value="{{ i.0 }}">Delete Course
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl" value="/home/">
+                                                </form>
+                                            {% else %}
+                                               Please Remove Assigned Instructor!
+
+                                            {% endif %}
                                         </td>
                                     </tr>
-                                    {% endif %}
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -317,7 +310,8 @@
                                 <tr>
                                     <th>Lab Number</th>
                                     <th>Lab Name</th>
-                                    <th style="width: 20%;">Delete</th>
+                                    <th>TA</th>
+                                    <th style="width: 20%;">Delete Lab</th>
                                 </tr>
                                 </thead>
 
@@ -326,12 +320,19 @@
                                     <tr>
                                         <td>{{ i.0 }}</td>
                                         <td>{{ i.1 }}</td>
+                                        <td>{{ i.2 }}</td>
                                         <td>
-                                            <form action="/delete-lab/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-info btn-user btn-block"
-                                                        name="deleteLab" value="{{ i.0 }}">Delete Lab
-                                                </button>
-                                                <input type="hidden" name="returnUrl" value="/home/"></form>
+                                            {% if i.2 == "NOT SET" %}
+                                                <form action="/delete-lab/" method="post">{% csrf_token %}
+                                                    <button type="submit" class="btn btn-info btn-user btn-block"
+                                                            name="deleteLab" value="{{ i.0 }}">Delete Lab
+                                                    </button>
+                                                    <input type="hidden" name="returnUrl" value="/home/">
+                                                </form>
+                                            {% else %}
+                                               Please Remove Assigned TA!
+
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
