@@ -449,7 +449,7 @@ class DeleteLabTa(View):
             else:
                 errorMessage="Lab Assignment Not Found!"
 
-            if (request.session["userType"] == "Administrator"):
+            if (request.session["userType"] == "Administrator" or request.session["userType"] == "Instructor"):
                 lab = list(myLab.objects.filter(labNumber=request.POST["deleteLabTa"]))[0]
                 lab.taUserName = "NOT SET"
                 lab.save()

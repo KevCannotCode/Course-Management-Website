@@ -239,6 +239,8 @@ class labToCourse_acceptance_test(TestCase):
         self.client = Client()
         self.lab = myLab.objects.create(labName= "MATHLAB", labNumber="202", taUserName= "TA")
         self.course = myCourse.objects.create(courseName= "MATH", courseNumber= 1,instructorUsername= "admin")
+        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.myClient.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
 
     def test_good_assign(self):
