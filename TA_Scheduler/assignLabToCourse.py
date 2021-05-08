@@ -10,10 +10,10 @@ class assignLabToCourse:
         errorMessage = assignLabToCourse.retrieveInDatabase(labNumber, courseNumber)
 
         if errorMessage == "":
-            #check if there are any existing labTOcourse entry
-            entry = list(labToCourse.objects.filter(labNumber=labNumber, courseNumber=courseNumber) )
+            #check if there are any existing labTocourse entry
+            entry = list(labToCourse.objects.filter(labNumber=labNumber) )
             if len(entry) != 0:
-                errorMessage = "These lab and course are already assigned"
+                errorMessage = "This lab is already assigned"
                 return errorMessage
             #there are no existing entry, so we can assign
             assign = labToCourse(labNumber= labNumber, courseNumber=courseNumber)
