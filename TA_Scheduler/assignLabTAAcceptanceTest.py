@@ -3,7 +3,7 @@ from django.test import Client
 from .models import myLab
 from .models import myLabTA
 from .models import myAccount
-import sys
+
 from .assignLabToCourse import labToCourse
 
 class AssignLabTAAcceptanceTest(TestCase):
