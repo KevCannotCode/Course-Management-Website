@@ -10,10 +10,7 @@ class AssignLabTAAcceptanceTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.ta = myAccount.objects.create(userName="kevin", password="pass", userType="TA")
-        self.taDup = myAccount.objects.create(userName="kevin2", password="pass2", userType="TA")
-        self.labDup = myLab.objects.create(labName="Algebra", labNumber="5", taUserName=self.taDup.userName)
         self.lab = myLab.objects.create(labName="MATHLAB", labNumber="202", taUserName=self.ta.userName)
-        self.assignDuplicate = myLabTA.objects.create(labNumber=self.labDup.labNumber, taUserName=self.taDup.userName)
 
     def test_good_assign(self):
         resp = self.client.post("/assign-lab-ta.html/", {"Username": self.ta.userName,
@@ -74,15 +71,18 @@ class AssignLabTAAcceptanceTest(TestCase):
                           "Assigning TA to Lab failed. Expected the message <Invalid Lab Number and TA Username!>")
 
     def test_duplicate_assign(self):
-
-        resp = self.client.post("/assign-lab-ta.html/", {"Username": self.taDup.userName,
-                                                         "Lab Number": self.labDup.labNumber})
+        myLabTA.objects.create(labNumber=self.lab.labNumber, taUserName=self.ta.userName)
+        # create a duplicate
+        resp = self.client.post("/assign-lab-ta.html/", {"Username": self.ta.userName,
+                                                         "Lab Number": self.lab.labNumber})
         self.assertEquals(resp.context["message"], "This Lab Already Has A TA!", "assigning TA to Lab failed."
                                                        "Expected <This Lab Already Has A TA!> message")
 
     def test_already_assign(self):
         #assign 2 different TAs to the same lab
-        resp = self.client.post("/assign-lab-ta.html/", {"Username": self.ta.userName,
-                                                         "Lab Number": self.labDup.labNumber})
+        myLabTA.objects.create(labNumber=self.lab.labNumber, taUserName=self.ta.userName)
+        newTA = myAccount.objects.create(userName= "new", password= "0000", userType= "TA")
+        resp = self.client.post("/assign-lab-ta.html/", {"Username": self.newTA.userName,
+                                                         "Lab Number": self.lab.labNumber})
         self.assertEquals(resp.context["message"], "This Lab Already Has A TA!", "assigning TA to Lab failed."
                                                                                  "Expected <This Lab Already Has A TA!> message")

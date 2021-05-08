@@ -34,22 +34,22 @@ from TA_Scheduler.views import DeleteCourseLab
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     path('',Login.as_view()),
-    path('home/', Home.as_view()),
-    path('create-account/', CreateAccount.as_view()),
-    path('delete-account/', DeleteAccount.as_view()),
-    path('create-course/', CreateCourse.as_view()),
-    path('delete-course/', DeleteCourse.as_view()),
-    path('create-lab/', CreateLab.as_view()),
-    path('delete-lab/', DeleteLab.as_view()),
-    path('logout/', Logout.as_view()),
-    path('profile/', Profile.as_view()),
-    path('assign-course-instructor/', AssignCourseInstructor.as_view()),
-    path('delete-course-instructor/', DeleteCourseInstructor.as_view()),
-    path('assign-lab-ta/', AssignLabTa.as_view()),
-    path('delete-lab-ta/', DeleteLabTa.as_view()),
-    path('assign-course-lab/', AssignCourseLab.as_view()),
-    path('delete-course-lab/', DeleteCourseLab.as_view())
+    #path('home/', Home.as_view()),
+    #path('create-account/', CreateAccount.as_view()),
+    #path('delete-account/', DeleteAccount.as_view()),
+    #path('create-course/', CreateCourse.as_view()),
+    #path('delete-course/', DeleteCourse.as_view()),
+    #path('create-lab/', CreateLab.as_view()),
+    #path('delete-lab/', DeleteLab.as_view()),
+    #path('logout/', Logout.as_view()),
+    #path('profile/', Profile.as_view()),
+    #path('assign-course-instructor/', AssignCourseInstructor.as_view()),
+    #path('delete-course-instructor/', DeleteCourseInstructor.as_view()),
+    #path('assign-lab-ta/', AssignLabTa.as_view()),
+    #path('delete-lab-ta/', DeleteLabTa.as_view()),
+    #path('assign-course-lab/', AssignCourseLab.as_view()),
+    #path('delete-course-lab/', DeleteCourseLab.as_view())
 
 ]
