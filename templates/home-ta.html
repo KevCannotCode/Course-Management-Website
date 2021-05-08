@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>TA Scheduler - Assign Course Instructor</title>
+    <title>TA Scheduler - Home</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -23,7 +23,8 @@
     <!-- Custom styles for this page -->
     <link href="{% static '/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
-    <!-- JQuery -->
+
+        <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     {% if errorMessage == "" %}
@@ -35,6 +36,7 @@
             });
         </script>
     {% endif %}
+
 </head>
 
 <body id="page-top">
@@ -57,68 +59,10 @@
         <hr class="sidebar-divider my-0">
 
         <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="/home">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Create
-        </div>
-
-        <!-- Nav Item - Account Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-account">
-                <i class="fas fa-user-circle"></i>
-                <span>Account</span></a>
-        </li>
-
-        <!-- Nav Item - Course Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-course">
-                <i class="fas fa-book-open"></i>
-                <span>Course</span></a>
-        </li>
-
-        <!-- Nav Item - Section Creation -->
-        <li class="nav-item">
-            <a class="nav-link" href="/create-lab">
-                <i class="fas fa-flask"></i>
-                <span>Lab</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Assign
-        </div>
-
-        <!-- Nav Item - Assign Instructor -->
-        <li class="nav-item">
-            <a class="nav-link" href="/assign-course-instructor/">
-                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
-                <span>Course Instructor</span></a>
-        </li>
-
-        <!-- Nav Item - Assign TA -->
-        <li class="nav-item">
-            <a class="nav-link" href="/assign-lab-ta/">
-                <i class="fas fa-user-circle"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-flask"></i>
-                <span>Lab TA</span></a>
-        </li>
-
-        <!-- Nav Item - Assign Lab to Course -->
-        <li class="nav-item active">
-            <a class="nav-link" href="/assign-course-lab/">
-                <i class="fas fa-flask"></i> <i class="fas fa-arrow-right"></i> <i class="fas fa-book-open"></i>
-                <span>Course Lab</span></a>
         </li>
 
         <hr class="sidebar-divider d-none d-md-block">
@@ -126,6 +70,7 @@
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
+
 
     </ul>
     <!-- End of Sidebar -->
@@ -151,7 +96,7 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ userName }}</span>
                             <img class="img-profile rounded-circle"
-                                 src="{% static '/img/undraw_profile.svg' %}">
+                                 src="{% static 'img/undraw_profile.svg' %}">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -172,58 +117,118 @@
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
+
             <div class="container-fluid">
+
+                <!-- Page Heading -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Assign Course Lab</h1>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">TA Dashboard</h1>
+                    </div>
                 </div>
-                <!-- /.container-fluid -->
+                <!-- Content Row -->
+                <div class="row">
 
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-4 d-none d-lg-block bg-register-image"></div>
-                            <div class="col-lg-5">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Assign A Course Lab!</h1>
-                                    </div>
-                                    <form class="user" action="/assign-course-lab/" method="post">
-                                        {% csrf_token %}
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <select class="form-control" name="courseNumber">
-                                                    <option value="Choose Course Number">Choose Course Number</option>
-                                                    {% for i in course_list %}
-                                                        <option value="{{ i.0 }}">{{ i.0 }} - {{ i.1 }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <select class="form-control" name="labNumber">
-                                                    <option value="Choose Lab Number">Choose Lab Number</option>
-                                                    {% for i in lab_list %}
-                                                        <option value="{{ i.0 }}">{{ i.0 }} - {{ i.1 }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                    <!-- Number of Accounts -->
+                    <div class="col-xl-4 col-md-4 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Number of Accounts
                                         </div>
-                                        <button type="submit" class="btn btn-warning btn-user btn-block">Assign Course
-                                            Lab
-                                        </button>
-                                    </form>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="accountDataCount"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user-circle fa-2x text-gray-300"></i>
+
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Number of Courses -->
+                    <div class="col-xl-4 col-md-4 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Number of Courses
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="courseDataCount"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Number of Sections -->
+                    <div class="col-xl-4 col-md-4 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of
+                                            Labs
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="labDataCount"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-flask fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Accounts Table -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-danger">Accounts</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="accountData" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>User Type</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in account_list %}
+                                    <tr>
+                                        <td>{{ i.0 }}</td>
+                                        <td>{{ i.2 }}</td>
+
+                                        {% for j in contact_list %}
+                                            {% if i.0 == j.0 %}
+                                                <td>{{ j.1 }}</td>
+                                                <td>{{ j.2 }}</td>
+                                            {% endif %}
+
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
                 </div>
                 <!-- Courses Table -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-warning">Courses & Labs</h6>
+                        <h6 class="m-0 font-weight-bold text-success">Courses</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -232,38 +237,17 @@
                                 <tr>
                                     <th>Course Number</th>
                                     <th>Course Name</th>
-                                    <th>Lab Number</th>
-                                    <th>Lab Name</th>
-
-                                    <th style="width: 20%;">Delete Course Assignment</th>
+                                    <th>Instructor</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                {% for i in course_lab_list %}
+                                {% for i in course_list %}
                                     <tr>
                                         <td>{{ i.0 }}</td>
-                                        {% for j in course_list %}
-                                            {% if i.0 == j.0 %}
-                                                <td>{{ j.1 }}</td>
-                                            {% endif %}
-                                        {% endfor %}
                                         <td>{{ i.1 }}</td>
-                                        {% for j in lab_list %}
-                                            {% if i.1 == j.0 %}
-                                                <td>{{ j.1 }}</td>
-                                            {% endif %}
-                                        {% endfor %}
-                                        <td>
-                                            <form action="/delete-course-lab/" method="post">{% csrf_token %}
-                                                <button type="submit" class="btn btn-warning btn-user btn-block"
-                                                        name="deleteCourseNumber" value="{{ i.0 }}">Delete Course Lab
-                                                    Assignment
-                                                </button>
-                                                <input type="hidden" name="deleteLabNumber" value="{{ i.1 }}">
-                                                <input type="hidden" name="returnUrl" value="/assign-course-lab/">
-                                            </form>
-                                        </td>
+                                        <td>{{ i.2 }}</td>
+
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -272,7 +256,40 @@
                     </div>
                 </div>
 
+                <!-- Labs Table -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Labs</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="labData" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Lab Number</th>
+                                    <th>Lab Name</th>
+                                    <th>TA</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for i in lab_list %}
+                                    <tr>
+                                        <td>{{ i.0 }}</td>
+                                        <td>{{ i.1 }}</td>
+                                        <td>{{ i.2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
+            <!-- /.container-fluid -->
+
         </div>
         <!-- End of Main Content -->
 
@@ -310,6 +327,7 @@
             </div>
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
+
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <a class="btn btn-primary" href="/logout/">Logout</a>
             </div>
@@ -336,7 +354,6 @@
     </div>
 </div>
 
-
 <!-- Bootstrap core JavaScript-->
 <script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
@@ -344,18 +361,15 @@
 <!-- Core plugin JavaScript-->
 <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
+<!-- Custom scripts for all pages-->
+<script src="{% static '/js/sb-admin-2.min.js' %}"></script>
 
 <!-- Page level plugins -->
 <script src="{% static '/vendor/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static '/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
-
-<!-- Custom scripts for all pages-->
-<script src="{% static '/js/sb-admin-2.min.js' %}"></script>
-
 <!-- Page level custom scripts -->
 <script src="{% static '/js/demo/datatables-demo.js' %}"></script>
-
 
 </body>
 
