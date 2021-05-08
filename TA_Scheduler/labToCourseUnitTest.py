@@ -1,6 +1,4 @@
 import unittest
-from django.test import TestCase
-from django.test import Client
 from .models import myLab
 from .models import myCourse
 import sys
@@ -79,5 +77,3 @@ class MyTestCase(unittest.TestCase):
         message = self.assign.assignLabToCourse(self.lab.LabNumber, self.course.courseNumber)
         self.assertEquals(message, "These lab and course are already assigned", "Assign lab to course failed."
                                                 "Expected the message <These lab and course are already assigned>")
-if __name__ == '__main__':
-    unittest.main()
