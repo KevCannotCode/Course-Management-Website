@@ -66,6 +66,8 @@ class Home(View):
             return render(request, "home.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":errorMessage})
         elif(request.session["userType"] == "Instructor"):
             return render(request, "home-instructor.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":errorMessage})
+        elif(request.session["userType"] == "TA"):
+            return render(request, "home-ta.html", {"account_list":account_list, "course_list":course_list, "lab_list":lab_list, "userName":userName, "contact_list":contact_list, "errorMessage":errorMessage})
 
 
 
@@ -217,6 +219,9 @@ class Profile(View):
         elif (request.session["userType"] == "Instructor"):
             return render(request, "profile-instructor.html", {"userName": userName, "phoneNumber": contact.phoneNumber,
                                                     "emailAddress": contact.emailAddress})
+        elif (request.session["userType"] == "TA"):
+            return render(request, "profile-ta.html", {"userName": userName, "phoneNumber": contact.phoneNumber,
+                                                    "emailAddress": contact.emailAddress})
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -228,11 +233,15 @@ class Profile(View):
             contact.phoneNumber = request.POST["phoneNumber"]
             contact.emailAddress = request.POST["emailAddress"]
             contact.save()
-            if (request.session["userType"] == "Administrator"):
+            if (request.session["userType"] == "Administrator" or request.session["userType"] == "TA"):
                 return render(request, "profile.html", {"userName": userName, "phoneNumber": contact.phoneNumber,
                                                         "emailAddress": contact.emailAddress})
             elif (request.session["userType"] == "Instructor"):
                 return render(request, "profile-instructor.html",
+                              {"userName": userName, "phoneNumber": contact.phoneNumber,
+                               "emailAddress": contact.emailAddress})
+            elif (request.session["userType"] == "TA"):
+                return render(request, "profile-ta.html",
                               {"userName": userName, "phoneNumber": contact.phoneNumber,
                                "emailAddress": contact.emailAddress})
 
@@ -355,6 +364,9 @@ class AssignLabTa(View):
             instructor_courses = list(myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
             lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
             return render(request,"assign-lab-ta-instructor.html",{"lab_courses":lab_courses, "instructor_courses":instructor_courses, "assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+        else:
+            request.session["error"] = "Unauthorized!"
+            return redirect("/home/")
 
     def post(self,request):
         if len(request.POST) != 0:
@@ -395,6 +407,9 @@ class AssignLabTa(View):
                                   {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
                                    "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
                                    "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
+                else:
+                    request.session["error"] = "Unauthorized!"
+                    return redirect("/home/")
 
             newAssignment = myLabTA(labNumber=request.POST["labNumber"], taUserName=request.POST["taUserName"])
             newAssignment.save()
