@@ -2,7 +2,6 @@ import unittest
 from .models import myLab
 from .models import myAccount
 from .models import myLabTA
-
 from .assignLabTA import assignLabTA
 
 class AssignLabTAUnitTest(unittest.TestCase):
