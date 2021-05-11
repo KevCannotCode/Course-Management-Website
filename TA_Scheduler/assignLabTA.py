@@ -63,20 +63,28 @@ class assignLabTA:
             return errorMessage
 
     def checkInstructor(labNumber, instructorUsername):
+        type= ""
         errorMessage= ""
         try:
-            myAccount.objects.filter(userName= instructorUsername, userType= "Instructor")
+            account = myAccount.objects.filter(userName= instructorUsername, userType= "Instructor")
+            type = account.userType
+
         except myAccount.DoesNotExist:
             errorMessage = "This Instructor Doesn't Exist"
-        try:
-            myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
-        except myCourseInstructor.DoesNotExist:
-            errorMessage = "This Instructor Doesn't Have A Course"
-        try:
-            course = myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
-            courseNumber = course.courseNumber
-            labToCourse.objects.filter(labNumber= labNumber, courseNumber= courseNumber)
-        except labToCourse.DoesNotExist:
-            errorMessage = "Unauthorized Assignment!"
-        finally:
+
+        if type == "Administrator":
             return errorMessage
+
+        else:
+            try:
+                myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
+            except myCourseInstructor.DoesNotExist:
+                errorMessage = "This Instructor Doesn't Have A Course"
+            try:
+                course = myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
+                courseNumber = course.courseNumber
+                labToCourse.objects.filter(labNumber= labNumber, courseNumber= courseNumber)
+            except labToCourse.DoesNotExist:
+                errorMessage = "Unauthorized Assignment!"
+            finally:
+                return errorMessage
