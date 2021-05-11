@@ -1,13 +1,17 @@
 from .models import myLabTA
 from .models import myLab
 from .models import myAccount
+from .models import labToCourse
+from .models import myCourseInstructor
 
 class assignLabTA:
-    def assignLabToTA(labNumber, taUsername):
+    def assignLabToTA(labNumber, taUsername, instructorUsername):
         #check the validity of the inputs
         errorMessage = assignLabTA.inputValidation(labNumber, taUsername)
         #check if the lab and course exist
         errorMessage = assignLabTA.retrieveInDatabase(labNumber, taUsername)
+        #check if the instructor is authorized to access this course
+        errorMessage = assignLabTA.checkInstructor(labNumber, instructorUsername)
 
         if errorMessage == "":
             #check if there are any existing labToTA entry
@@ -48,12 +52,31 @@ class assignLabTA:
     def retrieveInDatabase(labNumber, taUserName):
         errorMessage= ""
         try:
-            lab = myLab.objects.filter(labNumber=labNumber)
+            myLab.objects.filter(labNumber=labNumber)
         except myLab.DoesNotExist:
             errorMessage = "This Lab Doesn't Exist!"
         try:
-            course = myAccount.objects.filter(username=taUserName)
+            myAccount.objects.filter(username=taUserName)
         except myAccount.DoesNotExist:
             errorMessage = "This TA Doesnt' Exist"
+        finally:
+            return errorMessage
+
+    def checkInstructor(labNumber, instructorUsername):
+        errorMessage= ""
+        try:
+            myAccount.objects.filter(userName= instructorUsername, userType= "Instructor")
+        except myAccount.DoesNotExist:
+            errorMessage = "This Instructor Doesn't Exist"
+        try:
+            myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
+        except myCourseInstructor.DoesNotExist:
+            errorMessage = "This Instructor Doesn't Have A Course"
+        try:
+            course = myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
+            courseNumber = course.courseNumber
+            labToCourse.objects.filter(labNumber= labNumber, courseNumber= courseNumber)
+        except labToCourse.DoesNotExist:
+            errorMessage = "Unauthorized Assignment!"
         finally:
             return errorMessage
