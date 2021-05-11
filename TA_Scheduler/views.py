@@ -14,6 +14,8 @@ from .models import myCourseInstructor
 from .models import myLabTA
 from .models import labToCourse
 from .assignLabToCourse import assignLabToCourse
+from .assignLabTA import assignLabTA
+
 
 # Create your views here.
 class Login(View):
@@ -376,65 +378,85 @@ class AssignLabTa(View):
 
             errorMessage = ""
 
-            labNumber = request.POST["labNumber"]
-            if not(labNumber.isnumeric()):
-                errorMessage="Invalid Lab Number!"
-            else:
-                existingLabTa = list(myLabTA.objects.filter(labNumber=request.POST["labNumber"]))
-                existingLab = list(myLab.objects.filter(labNumber=labNumber))
-                existingTa = list(myAccount.objects.filter(userName=request.POST["taUserName"], userType="TA"))
-                if((len(existingLab) == 0) and (len(existingLab) == 0)):
-                    errorMessage="Invalid Lab Number And TA Username!"
-                elif((len(existingLab) == 0)):
-                    errorMessage="Invalid Lab Number!"
-                elif((len(existingTa) == 0)):
-                    errorMessage="Invalid TA Username!"
-                elif ((len(existingLabTa) != 0)):
-                    errorMessage="This Lab Already Has A TA!"
-            if(errorMessage != ""):
-                lab_list = list(myLab.objects.values_list("labNumber", "labName"))
-                account_list = list(myAccount.objects.values_list("userName", "userType"))
-                assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
-
-                if (request.session["userType"] == "Administrator"):
-                    print("Admin")
-                    return render(request, "assign-lab-ta.html",{"assigned_lab_list": assigned_lab_list, "lab_list": lab_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
-                elif (request.session["userType"] == "Instructor"):
-                    instructor_courses = list(
-                        myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
-                    lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
-                    return render(request, "assign-lab-ta-instructor.html",
-                                  {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
-                                   "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
-                                   "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
-                else:
-                    request.session["error"] = "Unauthorized!"
-                    return redirect("/home/")
-
-            newAssignment = myLabTA(labNumber=request.POST["labNumber"], taUserName=request.POST["taUserName"])
-            newAssignment.save()
-
-            lab = list(myLab.objects.filter(labNumber=request.POST["labNumber"]))[0]
-            lab.taUserName = request.POST["taUserName"]
-            lab.save()
+            errorMessage = assignLabTA.assignLabToTA(request.POST["labNumber"], request.POST["taUserName"], userName)
 
             lab_list = list(myLab.objects.values_list("labNumber", "labName"))
             account_list = list(myAccount.objects.values_list("userName", "userType"))
             assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
 
             if (request.session["userType"] == "Administrator"):
-                print("Admin")
-                return render(request, "assign-lab-ta.html",
-                              {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
-                               "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+               print("Admin")
+               return render(request, "assign-lab-ta.html",
+                             {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+                              "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
             elif (request.session["userType"] == "Instructor"):
-                instructor_courses = list(
-                    myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
-                lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
-                return render(request, "assign-lab-ta-instructor.html",
-                              {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
-                               "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
-                               "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
+               instructor_courses = list(
+                   myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
+               lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+               return render(request, "assign-lab-ta-instructor.html",
+                             {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
+                              "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+                              "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
+
+            #labNumber = request.POST["labNumber"]
+            #if not(labNumber.isnumeric()):
+            #    errorMessage="Invalid Lab Number!"
+            #else:
+            #    existingLabTa = list(myLabTA.objects.filter(labNumber=request.POST["labNumber"]))
+            #    existingLab = list(myLab.objects.filter(labNumber=labNumber))
+            #    existingTa = list(myAccount.objects.filter(userName=request.POST["taUserName"], userType="TA"))
+            #    if((len(existingLab) == 0) and (len(existingLab) == 0)):
+            #        errorMessage="Invalid Lab Number And TA Username!"
+            #    elif((len(existingLab) == 0)):
+            #        errorMessage="Invalid Lab Number!"
+            #    elif((len(existingTa) == 0)):
+            #        errorMessage="Invalid TA Username!"
+            #    elif ((len(existingLabTa) != 0)):
+            #        errorMessage="This Lab Already Has A TA!"
+            #if(errorMessage != ""):
+            #    lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+            #    account_list = list(myAccount.objects.values_list("userName", "userType"))
+            #    assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
+            #
+            #    if (request.session["userType"] == "Administrator"):
+            #        print("Admin")
+            #        return render(request, "assign-lab-ta.html",{"assigned_lab_list": assigned_lab_list, "lab_list": lab_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+            #    elif (request.session["userType"] == "Instructor"):
+            #        instructor_courses = list(
+            #            myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
+            #        lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+            #        return render(request, "assign-lab-ta-instructor.html",
+            #                      {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
+            #                       "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+            #                       "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
+            #    else:
+            #        request.session["error"] = "Unauthorized!"
+            #        return redirect("/home/")
+            #
+            #newAssignment = myLabTA(labNumber=request.POST["labNumber"], taUserName=request.POST["taUserName"])
+            #newAssignment.save()
+            #
+            #lab = list(myLab.objects.filter(labNumber=request.POST["labNumber"]))[0]
+            #lab.taUserName = request.POST["taUserName"]
+            #lab.save()
+            #
+            #lab_list = list(myLab.objects.values_list("labNumber", "labName"))
+            #account_list = list(myAccount.objects.values_list("userName", "userType"))
+            #assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
+            #
+            #if (request.session["userType"] == "Administrator"):
+            #    print("Admin")
+            #    return render(request, "assign-lab-ta.html",
+            #                  {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+            #                   "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
+            #elif (request.session["userType"] == "Instructor"):
+            #    instructor_courses = list(
+            #        myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
+            #    lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
+            #    return render(request, "assign-lab-ta-instructor.html",
+            #                  {"lab_courses": lab_courses, "instructor_courses": instructor_courses,
+            #                   "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+            #                   "account_list": account_list, "userName": userName, "errorMessage": errorMessage})
 
 class DeleteLabTa(View):
     def post(self,request):
