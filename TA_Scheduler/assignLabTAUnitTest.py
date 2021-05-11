@@ -9,8 +9,8 @@ from .models import labToCourse
 
 class AssignLabTAUnitTest(unittest.TestCase):
     def setUp(self):
-        self.lab = myLab.objects.create(labName="MATHLAB", labNumber="202", taUserName= "kevin")
-        self.ta = myAccount.objects.create(userName="kevin", password= "pass", userType= "TA")
+        self.lab = myLab.objects.create(labName="MATHLAB", labNumber="202", taUserName="")
+        self.ta = myAccount.objects.create(userName="kevin", password="pass", userType="TA")
         self.instructor = myAccount.objects.create(userName="Inst", password= "pass", userType= "Instructor")
         self.course = myCourse.objects.create(courseName= "MATH", courseNumber= "1",
                                               instructorUserName= self.instructor.userName)
@@ -28,10 +28,8 @@ class AssignLabTAUnitTest(unittest.TestCase):
 
     def test_TA_with_multiple_lab(self):
         #assing this TA to another Lab
+        # create a new lab
         newLab = myLab.objects.create(labName= "LAB", labNumber= "40", taUserName= self.ta.userName)
-        # assign the course to the instructor
-        myCourseInstructor.objects.create(courseNumber=self.course.courseNumber,
-                                          instructorUserName=self.instructor.userName)
         # assign the course to the lab
         labToCourse.objects.create(labNumber=newLab.labNumber, courseNumber=self.course.courseNumber)
 
@@ -47,7 +45,6 @@ class AssignLabTAUnitTest(unittest.TestCase):
         message = self.assign.assignLabToTA("", self.ta.username, self.instructor.userName)
         self.assertEquals(message, "No Lab Number Provided!", "Assign lab to course failed. "
                                                          "Expected the message <No Lab Number Provided!>")
-
 
         # instructor username empty
         message = self.assign.assignLabToTA(self.lab.labNumber, self.ta.username, "")
@@ -129,31 +126,32 @@ class AssignLabTAUnitTest(unittest.TestCase):
         #assign the lab to the course
         labToCourse.objects.create(labNumber= lab.labNumber, courseNumber= course.courseNumber)
         #check the TA to the lab
-        message = self.assign.checkInstructor(lab.labNumber, instructor.userName)
+        message = self.assign.assignLabToTA(lab.labNumber, self.ta.userName,instructor.userName)
         self.assertEquals(message, "", "Assign lab to TA failed. Expected the message <"">")
 
-    def test_wrong_instructor(self):
-        instructor = myAccount.objects.create(userName= "jrock", password= "millyRock", userType= "Instructor")
+    def test_unauthorized_assignment(self):
+        #try to assign a TA to a course with an instructor has not been assigned to the course
         impostor = myAccount.objects.create(userName= "thief", password= "password", userType= "Instructor")
+        # setup a course and a lab for the instructor
         course = myCourse.objects.create(courseName= "Dance", courseNumber= "101",
-                                         instructorUserName= instructor.userName)
+                                         instructorUserName= impostor.userName)
         lab = myLab.objects.create(labName= "DanceLab", labNumber= "202", taUserName= "")
-        #assign instructor to course
-        myCourseInstructor.objects.create(courseNumber= course.courseNumber, instructorUserName= instructor.userName)
-        #assign the lab to the course
+        myCourseInstructor.objects.create(courseNumber= course.courseNumber, instructorUserName= impostor.userName)
         labToCourse.objects.create(labNumber= lab.labNumber, courseNumber= course.courseNumber)
         #check the TA to the lab
-        message = self.assign.checkInstructor(lab.labNumber, impostor.userName)
+        message = self.assign.assignLabToTA(self.lab.labNumber, self.ta.userName, impostor.userName)
         self.assertEquals(message, "Unauthorized Assignment!", "Assign lab to TA failed. "
                                             "Expected the message <Unauthorized Assignment>")
+
     def test_instructor_without_course(self):
-        instructor = myAccount.objects.create(userName="jrock", password="millyRock", userType="Instructor")
-        course = myCourse.objects.create(courseName="Dance", courseNumber="101",
-                                         instructorUserName= instructor.userName)
-        lab = myLab.objects.create(labName="DanceLab", labNumber="202", taUserName="")
-        # assign the lab to the course
-        labToCourse.objects.create(labNumber=lab.labNumber, courseNumber=course.courseNumber)
-        # check the TA to the lab
-        message = self.assign.checkInstructor(lab.labNumber, instructor.userName)
+        instructorNoCourse = myAccount.objects.create(userName="jrock", password="millyRock", userType="Instructor")
+        # check assigning the TA to the lab with the instructor that doesn;t have a course
+        message = self.assign.assignLabToTA(self.lab.labNumber, self.ta.userName, instructorNoCourse.userName)
         self.assertEquals(message, "This Instructor Doesn't Have A Course!", "Assign lab to TA failed. "
                                         "Expected the message <This Instructor Doesn't Have A Course!>")
+
+    def test_admin_privileges(self):
+        admin = myAccount.objects.create(userName = "admin", password= "password", userType= "Administrator")
+        # assign TA to Lab with the admin account
+        message = self.assign.assignLabToTA(self.lab.labNumber, self.ta.userName, admin.userName)
+        self.assertEquals(message, "", "Assign lab to TA failed. Expected the message<"">")
