@@ -7,23 +7,27 @@ class assignLabToCourse:
         #check the validity of the inputs
         errorMessage = assignLabToCourse.inputValidation(labNumber, courseNumber)
         #check if the lab and course exist
-        errorMessage = assignLabToCourse.retrieveInDatabase(labNumber, courseNumber)
+        if errorMessage == "":
+            errorMessage = assignLabToCourse.retrieveInDatabase(labNumber, courseNumber)
 
         if errorMessage == "":
             #check if there are any existing labTocourse entry
             entry = list(labToCourse.objects.filter(labNumber=labNumber) )
             if len(entry) != 0:
-                errorMessage = "This lab is already assigned"
+                errorMessage = "This Lab is already assigned"
                 return errorMessage
             #there are no existing entry, so we can assign
             assign = labToCourse(labNumber= labNumber, courseNumber=courseNumber)
             assign.save()
-
         return errorMessage
+
     def inputValidation(labNumber, courseNumber):
         errorMessage = ""
         # Check for empty inputs
-        if len(labNumber) < 1:
+        if len(labNumber) < 1 and len(courseNumber) < 1:
+            errorMessage = "No Input Provided!"
+            return errorMessage
+        elif len(labNumber) < 1:
             errorMessage = "No Lab Number Provided!"
             return errorMessage
         elif len(courseNumber) < 1:
@@ -41,21 +45,21 @@ class assignLabToCourse:
 
         # Check for non numeric input
         elif not (labNumber.isnumeric()):
-            errorMessage = "Lab Number Isn't Numeric!"
+            errorMessage = "The Lab Number Isn't Numeric!"
             return errorMessage
         elif not (courseNumber.isnumeric()):
-            errorMessage = "Course Number Isn't Numeric!"
+            errorMessage = "The Course Number Isn't Numeric!"
         return errorMessage
 
     def retrieveInDatabase(labNumber, courseNumber):
         errorMessage= ""
-        try:
-            lab = myLab.objects.filter(labNumber=labNumber)
-        except myLab.DoesNotExist:
+        lab = myLab.objects.filter(labNumber=labNumber)
+        if len(lab) < 1:
             errorMessage = "This Lab Doesn't Exist!"
-        try:
-            course = myCourse.objects.filter(courseNumber=courseNumber)
-        except myCourse.DoesNotExist:
-            errorMessage = "This Course Doesnt' Exist"
-        finally:
             return errorMessage
+
+        course = myCourse.objects.filter(courseNumber=courseNumber)
+        if len(course) < 1:
+            errorMessage = "This Course Doesn't Exist!"
+        return errorMessage
+
