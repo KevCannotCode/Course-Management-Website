@@ -359,13 +359,14 @@ class AssignLabTa(View):
         errorMessage=request.session["error"]
         request.session["error"] = ""
 
+        course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
         lab_list = list(myLab.objects.values_list("labNumber", "labName"))
         account_list = list(myAccount.objects.values_list("userName", "userType"))
         assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
 
 
         if(request.session["userType"] == "Administrator"):
-            return render(request,"assign-lab-ta.html",{"assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
+            return render(request,"assign-lab-ta.html",{"course_list":course_list, "assigned_lab_list":assigned_lab_list, "lab_list":lab_list, "account_list":account_list, "userName":userName, "errorMessage":errorMessage})
         elif(request.session["userType"] == "Instructor"):
             instructor_courses = list(myCourseInstructor.objects.filter(instructorUserName=userName).values_list("courseNumber"))
             lab_courses = list(labToCourse.objects.values_list("courseNumber", "labNumber"))
@@ -384,6 +385,7 @@ class AssignLabTa(View):
 
             errorMessage = assignLabTA.assignLabToTA(request.POST["labNumber"], request.POST["taUserName"], userName)
 
+            course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
             lab_list = list(myLab.objects.values_list("labNumber", "labName"))
             account_list = list(myAccount.objects.values_list("userName", "userType"))
             assigned_lab_list = list(myLabTA.objects.values_list("labNumber", "taUserName"))
@@ -391,7 +393,7 @@ class AssignLabTa(View):
             if (request.session["userType"] == "Administrator"):
                print("Admin")
                return render(request, "assign-lab-ta.html",
-                             {"assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
+                             {"course_list": course_list, "assigned_lab_list": assigned_lab_list, "lab_list": lab_list,
                               "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
             elif (request.session["userType"] == "Instructor"):
                instructor_courses = list(
