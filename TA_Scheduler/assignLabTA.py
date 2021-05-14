@@ -7,32 +7,34 @@ from .models import myCourseInstructor
 class assignLabTA:
     def assignLabToTA(labNumber, taUsername, instructorUsername):
         #check the validity of the inputs
-        errorMessage = assignLabTA.inputValidation(labNumber, taUsername)
+        errorMessage = assignLabTA.inputValidation(labNumber, taUsername, instructorUsername)
         #check if the lab and course exist
-        errorMessage = assignLabTA.retrieveInDatabase(labNumber, taUsername)
+        if errorMessage == "":
+            errorMessage = assignLabTA.retrieveInDatabase(labNumber, taUsername,instructorUsername)
         #check if the instructor is authorized to access this course
-        errorMessage = assignLabTA.checkInstructor(labNumber, instructorUsername)
+        if errorMessage == "":
+            errorMessage = assignLabTA.checkInstructor(labNumber, instructorUsername)
 
         if errorMessage == "":
-            #check if there are any existing labToTA entry
-            #if a lab is already assigned to a TA, that lab can't be assigned to another TA
-            entry = list(assignLabTA.objects.filter(labNumber=labNumber))
-            if len(entry) != 0:
-                errorMessage = "This Lab already has a TA"
-                return errorMessage
             #there are no existing entry, so we can assign
-            assign = assignLabTA(labNumber= labNumber, taUserName= taUsername)
+            assign = myLabTA(labNumber= labNumber, taUserName= taUsername)
             assign.save()
         return errorMessage
 
-    def inputValidation(labNumber, taUserName):
+    def inputValidation(labNumber, taUserName, instructorUsername):
         errorMessage = ""
         # Check for empty inputs
-        if len(labNumber) < 1:
+        if len(labNumber) < 1 and len(taUserName) < 1:
+            errorMessage = "No Input Provided!"
+            return errorMessage
+        elif len(labNumber) < 1:
             errorMessage = "No Lab Number Provided!"
             return errorMessage
         elif len(taUserName) < 1:
             errorMessage = "No TA Username Provided!"
+            return errorMessage
+        elif len(instructorUsername) < 1:
+            errorMessage = "No Instructor Username Provided!"
             return errorMessage
 
         # Check for too long inputs
@@ -44,47 +46,55 @@ class assignLabTA:
             errorMessage = "The TA Username Is Too Long!"
             return errorMessage
 
+        elif len(instructorUsername) > 40:
+            errorMessage = "The Instructor Username Is Too Long!"
+            return errorMessage
+
         # Check for non numeric input
         elif not (labNumber.isnumeric()):
             errorMessage = "Lab Number Isn't Numeric!"
             return errorMessage
+        return errorMessage
 
-    def retrieveInDatabase(labNumber, taUserName):
-        errorMessage= ""
-        try:
-            myLab.objects.filter(labNumber=labNumber)
-        except myLab.DoesNotExist:
+    def retrieveInDatabase(labNumber, taUserName, instructorUsername):
+        errorMessage = ""
+        lab = myLab.objects.filter(labNumber=labNumber)
+        if len(lab) < 1:
             errorMessage = "This Lab Doesn't Exist!"
-        try:
-            myAccount.objects.filter(username=taUserName)
-        except myAccount.DoesNotExist:
-            errorMessage = "This TA Doesnt' Exist"
-        finally:
             return errorMessage
+
+        ta = myAccount.objects.filter(userName= taUserName)
+        if len(ta) < 1:
+            errorMessage = "This TA Doesn't Exist!"
+            return errorMessage
+
+        instructor = list(myAccount.objects.filter(userName=instructorUsername))
+        if len(instructor) < 1:
+            errorMessage = "This Instructor Doesn't Exist!"
+            return errorMessage
+        # check if there are any existing labToTA entry
+        # if a lab is already assigned to a TA, that lab can't be assigned to another TA
+        entry = list(myLabTA.objects.filter(labNumber=labNumber))
+        if len(entry) != 0:
+            errorMessage = "This Lab Already Has A TA!"
+            return errorMessage
+        return errorMessage
 
     def checkInstructor(labNumber, instructorUsername):
-        type= ""
         errorMessage= ""
-        try:
-            account = myAccount.objects.filter(userName= instructorUsername, userType= "Instructor")
-            type = account.userType
-
-        except myAccount.DoesNotExist:
-            errorMessage = "This Instructor Doesn't Exist"
-
-        if type == "Administrator":
-            return errorMessage
-
-        else:
-            try:
-                myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
-            except myCourseInstructor.DoesNotExist:
-                errorMessage = "This Instructor Doesn't Have A Course"
-            try:
-                course = myCourseInstructor.objects.filter(instructorUserName=instructorUsername)
-                courseNumber = course.courseNumber
-                labToCourse.objects.filter(labNumber= labNumber, courseNumber= courseNumber)
-            except labToCourse.DoesNotExist:
-                errorMessage = "Unauthorized Assignment!"
-            finally:
+        account = list(myAccount.objects.filter(userName= instructorUsername))
+        type = account[0].userType
+        # checks for the instructor
+        # an admin doesn't these checks
+        if type != "Administrator":
+            entry = list(myCourseInstructor.objects.filter(instructorUserName=instructorUsername))
+            if len(entry) < 1:
+                errorMessage = "This Instructor Doesn't Have A Course!"
                 return errorMessage
+
+            courseNumber = entry[0].courseNumber
+            # check if the labNumber and matches this instructor's course
+            instructorCourse = list(labToCourse.objects.filter(labNumber= labNumber, courseNumber= courseNumber))
+            if len(instructorCourse) < 1:
+                errorMessage = "Unauthorized Assignment!"
+        return errorMessage
