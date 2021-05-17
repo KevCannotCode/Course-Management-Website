@@ -4,16 +4,16 @@ from .models import myCourseInstructor
 from .models import myAccount
 from .models import myCourse
 
-class myCourseInstructor:
-    def myCourseInstructor( instructorUserName , courseNumber):
+class instructorToCourse:
+    def instructorToCourse( instructorUserName , courseNumber):
         # check the validity of input
-        errorMessage = myCourseInstructor.inputValidation(instructorUserName, courseNumber)
+        errorMessage = instructorToCourse.inputValidation(instructorUserName, courseNumber)
         # check if the instructor and course already exist
         if errorMessage == "":
-            errorMessage = myCourseInstructor.DatabaseCheck(instructorUserName, courseNumber)
+            errorMessage = instructorToCourse.DatabaseCheck(instructorUserName, courseNumber)
 
         if errorMessage == "":
-            assign = myCourseInstructor(instructorUserName=instructorUserName, courseNumber=courseNumber)
+            assign = myCourseInstructor.objects.create(instructorUserName=instructorUserName, courseNumber=courseNumber)
             assign.save()
         return errorMessage
 
@@ -31,8 +31,11 @@ class myCourseInstructor:
             return errorMessage
 
         # Check for long inputs
+        elif len(instructorUserName) > 40 and len(courseNumber) > 3:
+            errorMessage = "Instructor Name and Course Number are Too long"
+            return errorMessage
         elif len(instructorUserName) > 40:
-            errorMessage = "Instructor Name is Too long!"
+            errorMessage = "Instructor Name can only be up to 40 characters!"
             return errorMessage
 
         elif len(courseNumber) > 3:
@@ -48,24 +51,28 @@ class myCourseInstructor:
         errorMessage = ""
 
         instructor = myAccount.objects.filter(userName=instructorUserName)
-        if len(instructor) < 1:
-            errorMessage = "The instructor does not exist"
-            return errorMessage
         course = myCourse.objects.filter(courseNumber=courseNumber)
+
+        if len(instructor) < 1 and len(course) < 1:
+            errorMessage = "This Instructor and Course Don't Exist"
+            return errorMessage
+        if len(instructor) < 1:
+            errorMessage = "This Instructor Doesn't Exist"
+            return errorMessage
         if len(course) < 1:
             errorMessage = "This Course Doesn't Exist"
             return errorMessage
         instructor = myCourseInstructor.objects.filter(instructorUserName= instructorUserName)
-        if len(instructor) < 1:
+        if len(instructor) > 0:
             errorMessage = "The Instructor Has Already Been assigned!"
             return errorMessage
         course = myCourseInstructor.objects.filter(courseNumber=courseNumber)
-        if len(course) < 1:
+        if len(course) > 0:
             errorMessage = "This Course Has Already Been Assigned!"
             return errorMessage
         instructorToCourse = myCourseInstructor.objects.filter(instructorUserName= instructorUserName
                                                                ,courseNumber= courseNumber)
-        if len(instructorToCourse) < 1:
+        if len(instructorToCourse) > 0:
             errorMessage = "This Instructor Has Already Been Assigned To This Course!"
             return errorMessage
         return errorMessage

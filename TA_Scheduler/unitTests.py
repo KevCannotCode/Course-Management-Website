@@ -2,12 +2,13 @@ import unittest
 import sys
 from django.test import TestCase, Client
 from .models import myAccount, myCourse, myLab
+from .models import myCourseInstructor, labToCourse
 from TA_Scheduler.myLogin import myLogin
 from .createAccount import createAccountFunctions
 from .createCourseFunctions import createCourseFunctions
 from .createLabFunctions import createLabFunctions
 from .assignLabToCourse import assignLabToCourse
-from .myCourseInstructor import myCourseInstructor
+from .instructorToCourse import instructorToCourse
 from .assignLabTA import assignLabTA
 
 class loginUnitTest(TestCase):
@@ -256,150 +257,146 @@ class TestCase_badInput_createLab(TestCase):
                          "Creating a bad input lab COMPSCI with number asdf. Expected errorMessage = 'Lab Number Isn't Numeric'")
 
 
-class MyTestCase(unittest.TestCase):
+class assignLabToCourseUnitTest(TestCase):
     def setUp(self):
         self.lab = myLab.objects.create(labName="MATHLAB", labNumber="202", taUserName= "TA")
-        self.course = myCourse.objects.create(courseName="MATH", courseNumber= 1,instructorUsername= "admin")
-        self.assign = assignLabToCourse
-        self.assignDuplicate = assignLabToCourse.assignLabToCourse(self.lab.LabNumber, self.course.courseNumber)
+        self.course = myCourse.objects.create(courseName="MATH", courseNumber= "1" ,instructorUserName= "admin")
 
     def test_good_inputs(self):
-        message = self.assign.assignLabToCourse(self.lab.LabNumber, self.course.courseNumber)
-        self.assertEquals(message, "", "Assign lab to course failed. Expected the message <"">")
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, self.course.courseNumber)
+        self.assertEquals("",message, "Assign lab to course failed. Expected the message <"">")
 
     def test_empty_inputs(self):
         # course Number empty
-        message = self.assign.assignLabToCourse(self.lab.courseNumber, "")
-        self.assertEquals(message, "No Course Number Provided!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, "")
+        self.assertEquals("No Course Number Provided!",message, "Assign lab to course failed. "
                                                          "Expected the message <No Course Number Provided!>")
 
         # lab Number empty
-        message = self.assign.assignLabToCourse("", self.course.courseNumber)
-        self.assertEquals(message, "No Lab Number Provided!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("", self.course.courseNumber)
+        self.assertEquals("No Lab Number Provided!",message,"Assign lab to course failed. "
                                                          "Expected the message <No Lab Number Provided!>")
 
         # Both inputs are invalid
-        message = self.assign.assignLabToCourse("", "")
-        self.assertEquals(message, "No Input Provided!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("", "")
+        self.assertEquals("No Input Provided!",message,"Assign lab to course failed. "
                                                          "Expected the message <No Input Provided!>")
 
     def test_nonexisting_inputs(self):
         #non existing labNumber
-        message = self.assign.assignLabToCourse("999", self.course.courseNumber)
-        self.assertEquals(message, "This Lab Doesn't Exist!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("999", self.course.courseNumber)
+        self.assertEquals("This Lab Doesn't Exist!",message, "Assign lab to course failed. "
                                                               "Expected the message <This Lab Doesn't Exist!>")
         # non existing courseNumber
-        message = self.assign.assignLabToCourse(self.lab.LabNumber, "999")
-        self.assertEquals(message, "This Course Doesn't Exist!", "Assign course to course failed. "
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, "999")
+        self.assertEquals("This Course Doesn't Exist!",message, "Assign course to course failed. "
                                                               "Expected the message <This Course Doesn't Exist!>")
         # non existing labNumber and courseNumber
-        message = self.assign.assignLabToCourse("999", "999")
-        self.assertEquals(message, "This Lab Doesn't Exist!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("999", "999")
+        self.assertEquals("This Lab Doesn't Exist!", message, "Assign lab to course failed. "
                                                               "Expected the message <This Lab Doesn't Exist!>")
 
     def test_long_inputs(self):
         # long labNumber
-        message = self.assign.assignLabToCourse("1000", self.course.courseNumber)
-        self.assertEquals(message, "The Lab Number Is Too Long!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("1000", self.course.courseNumber)
+        self.assertEquals( "The Lab Number Is Too Long!", message, "Assign lab to course failed. "
                                                               "Expected the message <The Lab Number Is Too Long!>")
         # non existing courseNumber
-        message = self.assign.assignLabToCourse(self.lab.LabNumber, "1000")
-        self.assertEquals(message, "The Course Number Is Too Long!", "Assign course to course failed. "
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, "1000")
+        self.assertEquals( "The Course Number Is Too Long!", message, "Assign course to course failed. "
                                                                  "Expected the message <The Course Number Is Too Long!>")
         # non existing labNumber and courseNumber
-        message = self.assign.assignLabToCourse("1000", "1000")
-        self.assertEquals(message, "The Lab Number Is Too Long!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("1000", "1000")
+        self.assertEquals( "The Lab Number Is Too Long!", message, "Assign lab to course failed. "
                                                               "Expected the message <The Lab Number Is Too Long!>")
 
     def test_non_numeric_inputs(self):
         # non numeric labNumber
-        message = self.assign.assignLabToCourse("lab", self.course.courseNumber)
-        self.assertEquals(message, "The Lab Number Isn't Numeric!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("lab", self.course.courseNumber)
+        self.assertEquals("The Lab Number Isn't Numeric!",message, "Assign lab to course failed. "
                                                               "Expected the message <The Lab Number Is Too Long!>")
         # non existing courseNumber
-        message = self.assign.assignLabToCourse(self.lab.LabNumber, "course")
-        self.assertEquals(message, "The Course Number Isn't Numeric!", "Assign course to course failed. "
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, "cou")
+        self.assertEquals( "The Course Number Isn't Numeric!", message, "Assign course to course failed. "
                                                                  "Expected the message <The Course Number Isn't Numeric!>")
         # non existing labNumber and courseNumber
-        message = self.assign.assignLabToCourse("lab", "course")
-        self.assertEquals(message, "The Lab Number Isn't Numeric!", "Assign lab to course failed. "
+        message = assignLabToCourse.assignLabToCourse("lab", "cou")
+        self.assertEquals( "The Lab Number Isn't Numeric!", message, "Assign lab to course failed. "
                                                               "Expected the message <The Lab Number Isn't Numeric!>")
 
     def test_duplicate(self):
-        message = self.assign.assignLabToCourse(self.lab.LabNumber, self.course.courseNumber)
-        self.assertEquals(message, "These lab and course are already assigned", "Assign lab to course failed."
+        assignLabToCourse.assignLabToCourse(self.lab.labNumber, self.course.courseNumber)
+        message = assignLabToCourse.assignLabToCourse(self.lab.labNumber, self.course.courseNumber)
+        self.assertEquals("This Lab is Already Assigned", message , "Assign lab to course failed."
                                                 "Expected the message <These lab and course are already assigned>")
 
 
 
-class courseInstructorUnitTest(unittest.TestCase):
+class instructorToCourseUnitTest(TestCase):
     def setUp(self):
         self.lab = myLab.objects.create(labName="MATHLAB", labNumber="202", taUserName= "TA")
-        self.course = myCourse.objects.create(courseName="MATH", courseNumber= 1,instructorUsername= "admin")
-        self.assign = assignLabToCourse
-        self.assignDuplicate = assignLabToCourse.myCourseInstructor(self.myCourseInstructor.instructorUsername, self.myCourseInstructor.courseNumber)
+        self.course = myCourse.objects.create(courseName="MATH", courseNumber= "1",instructorUserName= "admin")
+        self.instuctor = myAccount.objects.create(userName= "instructor", password= "pass", userType= "Instructor")
 
     def testGoodInputs(self):
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.instructorUsername, self.course.courseNumber)
-        self.assertEquals(message, "", "Assigning Instructor to course Succeeded. Expected the message <"">")
+       message = instructorToCourse.instructorToCourse(self.instuctor.userName, self.course.courseNumber)
+       self.assertEquals("", message, "Assigning Instructor to course Succeeded. Expected the message <"">")
 
     def testEmptyInputs(self):
         # course Number field empty
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.courseNumber, "")
-        self.assertEquals(message, "Course Number was Not Provided",
-                          "Assigning instructor to course failed. Expected the message <Course Number was Not Provided>")
+        message = instructorToCourse.instructorToCourse(self.instuctor.userName, "")
+        self.assertEquals("Course number is required", message,
+                          "Assigning instructor to course failed. Expected the message <Course number is required>")
 
         # Instructor field empty
-        message = self.assign.myCourseInstructor("", self.myCourseInstructor.courseNumber)
-        self.assertEquals(message, "Instructor Name was Not Provided",
-                          "Assigning instructor to course failed. Expected the message <Instructor Name was Not Provided>")
+        message = instructorToCourse.instructorToCourse("", self.course.courseNumber)
+        self.assertEquals("Instructor name is required", message,
+                          "Assigning instructor to course failed. Expected the message <Instructor name is required>")
 
         # Both inputs are invalid
-        message = self.assign.myCourseInstructor("", "")
-        self.assertEquals(message, "No Instructor Name or Course Number Given", "Assigning Instructor to course failed. "
-                                                         "Expected the message <No Instructor Name or Course Number Given>")
+        message = instructorToCourse.instructorToCourse("", "")
+        self.assertEquals("No Input Provided!", message, "Assigning Instructor to course failed. "
+                                                         "Expected the message <No Input Provided!>")
 
     def testNonexistingInputs(self):
         #Instructor doesn't exist
-        message = self.assign.myCourseInstructor("DNE", self.myCourseInstructor.courseNumber)
-        self.assertEquals(message,  "This Instructor Doesn't Exist",
+        message = instructorToCourse.instructorToCourse("DNE", self.course.courseNumber)
+        self.assertEquals("This Instructor Doesn't Exist", message,
                           "Assigning Instructor to course failed. Expected the message <This Instructor Doesn't Exist>")
         #courseNumber doesn't exist
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.instructorUsername, "999")
-        self.assertEquals(message, "This Course Doesn't Exist",
+        message = instructorToCourse.instructorToCourse(self.instuctor.userName, "999")
+        self.assertEquals("This Course Doesn't Exist", message,
                           "Assigning instructor to course failed. Expected the message <This Course Doesn't Exist>")
         # Both Instructor and Course Number don't Exist
-        message = self.assign.myCourseInstructor("DNE", "999")
-        self.assertEquals(message, "This Instructor and Course Don't Exist",
+        message = instructorToCourse.instructorToCourse("DNE", "999")
+        self.assertEquals("This Instructor and Course Don't Exist", message,
                           "Assigning instructor to course failed. Expected the message <This Instructor and Course Don't Exist>")
 
     def testLongInputs(self):
         # long InstructorUserName
-        message = self.assign.myCourseInstructor("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", self.myCourseInstructor.instructorUsername)
-        self.assertEquals(message, "Instructor Name is Too long",
-                          "Assigning instructor to course failed. Expected the message <Instructor Name is Too long>")
+        message = instructorToCourse.instructorToCourse("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", self.course.courseNumber)
+        self.assertEquals("Instructor Name can only be up to 40 characters!", message,
+                          "Assigning instructor to course failed. Expected the message <Instructor Name can only be up to 40 characters!>")
         #long course number
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.instructorUsername, "1000")
-        self.assertEquals(message, "Course Number is Too long",
-                          "Assigning instructor to course failed. Expected the message <Course Number is Too long>")
+        message = instructorToCourse.instructorToCourse(self.instuctor.userName, "1000")
+        self.assertEquals("The Course number can only be up to 3 digits long", message,
+                          "Assigning instructor to course failed. "
+                          "Expected the message <The Course number can only be up to 3 digits long>")
         # long instructorUserName and long course number
-        message = self.assign.myCourseInstructor("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "1000")
+        message = instructorToCourse.instructorToCourse("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "1000")
         self.assertEquals(message, "Instructor Name and Course Number are Too long",
                           "Assigning instructor to course failed. Expected the message <Instructor Name and Course Number are Too long>")
 
-    def testTypeOfInputs(self):
-        # non String Instructor
-        message = self.assign.myCourseInstructor("951615", self.myCourseInstructor.courseNumber)
-        self.assertEquals(message, "The Instructor name can't have numbers or special characters", "Assigning Instructor to course failed. "
-                                                              "Expected the message <The Instructor name can't have numbers or special characters>")
+    def testNumericInput(self):
         # non numeric courseNumber
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.instructorUsername, "number")
-        self.assertEquals(message, "The Course Number Isn't Numeric", "Assigning Instructor to course failed. "
-                                                                 "Expected the message <The Course Number Isn't Numeric>")
+        message = instructorToCourse.instructorToCourse(self.instuctor.userName, "number")
+        self.assertEquals("The Course number can only be up to 3 digits long", message, "Assigning Instructor to course failed. "
+                                            "Expected the message <The Course number can only be up to 3 digits long>")
     def testDuplicateAssignment(self):
-        message = self.assign.myCourseInstructor(self.myCourseInstructor.instructorUsername, self.myCourseInstructor.courseNumber)
-        self.assertEquals(message, "This Instructor and course are already assigned", "Assigning Instructor to course failed."
-                                                "Expected the message <This Instructor and course are already assigned>")
+        instructorToCourse.instructorToCourse(self.instuctor.userName, self.course.courseNumber)
+        message = instructorToCourse.instructorToCourse(self.instuctor.userName, self.course.courseNumber)
+        self.assertEquals("The Instructor Has Already Been assigned!", message, "Assigning Instructor to course failed."
+                                                "Expected the message <This Instructor and course are already assigned!>")
 
 
 class AssignLabTAUnitTest(TestCase):

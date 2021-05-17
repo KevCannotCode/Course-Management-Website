@@ -14,7 +14,7 @@ class assignLabToCourse:
             #check if there are any existing labTocourse entry
             entry = list(labToCourse.objects.filter(labNumber=labNumber) )
             if len(entry) != 0:
-                errorMessage = "This Lab is already assigned"
+                errorMessage = "This Lab is Already Assigned"
                 return errorMessage
             #there are no existing entry, so we can assign
             assign = labToCourse(labNumber= labNumber, courseNumber=courseNumber)
