@@ -238,11 +238,12 @@ class labToCourse_acceptance_test(TestCase):
 
 
     def test_good_assign(self):
-        response = self.client.post("/assign-LabToCourse/", {"courseNumber": 1, "labNumber": 202})
+        response = self.client.post("/assign-course-lab/", {"courseNumber": 1, "labNumber": 202})
         self.assertEqual("", response.context["errorMessage"], "Failed to assign lab to course")
 
     def test_empty_arguments(self):
-        self.assertEquals()
+        response = self.client.post("/assign-course-lab/", {"courseNumber": "", "labNumber": ""})
+        self.assertEqual("No Input Provided!", response.context["errorMessage"], "Failed produce error when nothing was inputted")
 
 class testCreateSection(TestCase):
     def setUp(self):
@@ -318,69 +319,61 @@ class testSectionEmptyInput(TestCase):
 
 
 
-class myCourseInstructor(TestCase):
+class testmyCourseInstructor(TestCase):
     def setUp(self):
         self.client = Client()
-        self.course = myCourseInstructor.objects.create(instructorUsername= "admin", courseNumber= 1)
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
+        self.instructor = myAccount.objects.create(userName="instructor", password="password", userType="Instructor")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
+        self.course = myCourse.objects.create(instructorUserName= "math", courseNumber= 5)
 
     def testGoodArgs(self):
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": self.myCourseInstructor.instructorUserName,
-                                                         "CourseNumber": self.myCourseInstructor.courseNumber})
-        self.assertEquals(resp.context["message"], "Course Assigned", "assigning instructor to course succeeded."
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": self.instructor.userName,
+                                                         "courseNumber": self.course.courseNumber})
+        self.assertEquals("", resp.context["errorMessage"], "assigning instructor to course succeeded."
                                                                    "Expected <Course Assigned> message")
 
     def testEmptyArgs(self):
         #empty instructorUserName
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": "", "course Number:": self.myCourseInstructor.courseNumber})
-        self.assertEquals(resp.context["message"], "Instructor Name was Not Provided",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "", "courseNumber": self.course.courseNumber})
+        self.assertEquals("Invalid Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Instructor Name was Not Provided>")
         # empty courseNumber
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": self.myCourseInstructor.instructorUserName, "course Number":""})
-        self.assertEquals(resp.context["message"], "Course Number was Not Provided",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": self.course.instructorUserName, "courseNumber": ""})
+        self.assertEquals("Invalid Course Number!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Course Number was Not Provided>")
         # empty instructorUserName and courseNumber
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": "", "course Number:": ""})
-        self.assertEquals(resp.context["message"], "Both Instructor and Course number are required",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "", "courseNumber": ""})
+        self.assertEquals("Invalid Course Number!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Both Instructor and Course number are required>")
 
     def testLongArgs(self):
         #long instructorUserName
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "course Number:":self.myCourseInstructor.courseNumber})
-        self.assertEquals(resp.context["message"], "Instructor Name is Too long",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "courseNumber":self.course.courseNumber})
+        self.assertEquals("Invalid Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Instructor Name is Too long>")
         #long course number
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": self.myCourseInstructor.instructorUserName,"course Number:": "7410"})
-        self.assertEquals(resp.context["message"], "Course Number is Too long",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": self.course.instructorUserName, "courseNumber": "7410"})
+        self.assertEquals("Invalid Course Number And Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Course Number is Too long>")
         #long instructorUserName and long course number
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "course Number:": "7410"})
-        self.assertEquals(resp.context["message"], "Instructor Name and Course Number are Too long",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "courseNumber": "7410"})
+        self.assertEquals("Invalid Course Number And Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <Instructor Name and Course Number are Too long>")
 
-    def testNumbersMax(self):
-
-        # max course number
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": self.myCourseInstructor.instructorUserName, "course Number:":sys.maxsize})
-        self.assertEquals(resp.context["message"], "Course Number is too Large",
-                          "Assigning instructor to course failed. Expected the message <Course Number is too Large>")
-        # min course number
-        resp = self.client.post("/assign-course-instructor/",
-                                {"Instructor Name:": self.myCourseInstructor.instructorUserName, "course Number:": -sys.maxsize+1})
-        self.assertEquals(resp.context["message"], "Course Number must be >0",
-                          "Assigning instructor to course failed. Expected the message <Course Number must be >0>")
 
     def testNonexistingArgs(self):
         # Non-existing Instructor but good course number
         resp = self.client.post("/assign-course-instructor/",
-                                {"Instructor Name:": "DNE", "course Number:": self.myCourseInstructor.courseNumber})
-        self.assertEquals(resp.context["message"], "This Instructor Doesn't Exist",
+                                {"instructorUserName": "DNE", "courseNumber": self.course.courseNumber})
+        self.assertEquals("Invalid Instructor Username!", resp.context["errorMessage"],
                           "Assigning Instructor to course failed. Expected the message <This Instructor Doesn't Exist>")
         # Good Instructor but non existing course number
         resp = self.client.post("/assign-course-instructor/",
-                                {"Instructor Name:": self.myCourseInstructor.instructorUserName, "course Number:": "999"})
-        self.assertEquals(resp.context["message"], "This Course Doesn't Exist",
+                                {"instructorUserName": self.course.instructorUserName, "courseNumber": "999"})
+        self.assertEquals("Invalid Course Number And Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <This Course Doesn't Exist>")
         # Both Instructor and Course Number don't Exist
-        resp = self.client.post("/assign-course-instructor/", {"Instructor Name:": "DNE", "course Number:": "999"})
-        self.assertEquals(resp.context["message"], "This Instructor and Course Don't Exist",
+        resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "DNE", "courseNumber": "999"})
+        self.assertEquals("Invalid Course Number And Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <This Instructor and Course Don't Exist>")
