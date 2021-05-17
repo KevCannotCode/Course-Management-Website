@@ -69,13 +69,10 @@ class login_test(TestCase):
 
 class CreateNewAccount(TestCase):
 
-    myClient = None
-    thingList = None
-
     def setUp(self):
         self.myClient = Client()
         self.thingList = {'flynnk': 'flynnPassword', 'smithj': 'smithPassword', 'petersont': "petersonPassword"}
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.myClient.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
         for i in self.thingList.keys():
@@ -95,15 +92,12 @@ class CreateNewAccount(TestCase):
         resp = self.myClient.post("/create-account/", {"userName": "", "password": "randomPassword", "userType": "Administrator"})
         self.assertEqual("No Username Provided!", resp.context["errorMessage"], "system allowed an invalid input for account creation")
 
-    def test_acceptanceTest_invalidAccountType(self):
-        resp = self.myClient.post("/create-account/", {"userName": "person", "password": "randomPassword", "userType": ""}, follow=True)
-        self.assertEqual("Choose A Valid User Type!", resp.context["errorMessage"], "system allowed an invalid input for account creation")
 
 
 class TestCase_empty_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_empty_createCourse(self):
@@ -115,7 +109,7 @@ class TestCase_empty_createCourse(TestCase):
 class TestCase_empty_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_empty_createCourse(self):
@@ -127,7 +121,7 @@ class TestCase_empty_createCourse(TestCase):
 class TestCase_empty_courseName_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_empty_courseName_createCourse(self):
@@ -139,7 +133,7 @@ class TestCase_empty_courseName_createCourse(TestCase):
 class TestCase_good_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_good_createCourse(self):
@@ -154,7 +148,7 @@ class TestCase_good_createCourse(TestCase):
 class TestCase_duplicate_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
         self.compsciCourse = myCourse.objects.create(courseNumber="1", courseName="COMPSCI")
 
@@ -165,7 +159,7 @@ class TestCase_duplicate_createCourse(TestCase):
     class TestCase_badInput_courseNumber_notNumeric_createCourse(TestCase):
         def setUp(self):
             self.client = Client()
-            self.admin = myAccount.objects.create(userName="admin", password="password")
+            self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
             self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
         def test_acceptance_badInput_courseNumber_notNumeric_createCourse(self):
@@ -177,7 +171,7 @@ class TestCase_duplicate_createCourse(TestCase):
 class TestCase_badInput_courseNumber_tooLong_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_badInput_courseNumber_tooLong_createCourse(self):
@@ -189,7 +183,7 @@ class TestCase_badInput_courseNumber_tooLong_createCourse(TestCase):
 class TestCase_badInput_courseName_tooLong_createCourse(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_badInput_courseName_tooLong_createCourse(self):
@@ -201,7 +195,7 @@ class TestCase_badInput_courseName_tooLong_createCourse(TestCase):
 class TestCase_good_createLab(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_good_createLab(self):
@@ -217,7 +211,7 @@ class TestCase_duplicate_createLab(TestCase):
     def setUp(self):
         self.client = Client()
         self.compsciLab = myLab.objects.create(labNumber="1", labName="COMPSCI")
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_duplicate_createLab(self):
@@ -238,13 +232,14 @@ class labToCourse_acceptance_test(TestCase):
     def setUp(self):
         self.client = Client()
         self.lab = myLab.objects.create(labName= "MATHLAB", labNumber="202", taUserName= "TA")
-        self.course = myCourse.objects.create(courseName= "MATH", courseNumber= 1,instructorUsername= "admin")
-        self.admin = myAccount.objects.create(userName="admin", password="password")
-        self.myClient.post("/", {"userName": self.admin.userName, "password": self.admin.password})
+        self.course = myCourse.objects.create(courseName= "MATH", courseNumber= 1)
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
+        self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
 
     def test_good_assign(self):
-        response = self.client.post("/assign-LabToCourse/", {"labNumber"})
+        response = self.client.post("/assign-LabToCourse/", {"courseNumber": 1, "labNumber": 202})
+        self.assertEqual("", response.context["errorMessage"], "Failed to assign lab to course")
 
     def test_empty_arguments(self):
         self.assertEquals()
@@ -252,7 +247,7 @@ class labToCourse_acceptance_test(TestCase):
 class testCreateSection(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_createSection(self):
@@ -268,8 +263,8 @@ class testCreateSection(TestCase):
 class testDuplicateSection(TestCase):
     def setUp(self):
         self.client = Client()
-        self.newLab = createLabFunctions.createLab(labNumber="1", labName="Section 1")
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.newLab = myLab.objects.create(labNumber="1", labName="Section 1")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_duplicateSection(self):
@@ -281,7 +276,7 @@ class testDuplicateSection(TestCase):
 class testSectionInput(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_labNumberNumeric(self):
@@ -303,7 +298,7 @@ class testSectionInput(TestCase):
 class testSectionEmptyInput(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = myAccount.objects.create(userName="admin", password="password")
+        self.admin = myAccount.objects.create(userName="admin", password="password", userType="Administrator")
         self.client.post("/", {"userName": self.admin.userName, "password": self.admin.password})
 
     def test_acceptance_labNumberEmpty(self):
