@@ -377,3 +377,50 @@ class testmyCourseInstructor(TestCase):
         resp = self.client.post("/assign-course-instructor/", {"instructorUserName": "DNE", "courseNumber": "999"})
         self.assertEquals("Invalid Course Number And Instructor Username!", resp.context["errorMessage"],
                           "Assigning instructor to course failed. Expected the message <This Instructor and Course Don't Exist>")
+
+
+class testContact(TestCase):
+    def setUp(self):
+        self.myClient = Client()
+        self.admin = myContact.objects.create(userName="admin",  phoneNumber= 1117723333 , emailAddress= "addbest@yahoo.com")
+        self.myClient.post("/", {"userName": self.admin.userName, "phoneNumber": self.admin.phoneNumber,  "emailAddress": self.admin.emailAddress})
+        self.PhoneList = {'testone': 4141112222, 'testtwo': 4142223333, 'testthree': 4143334444}
+        self.EmailList = {'testone': 'emailone@yahoo.com', 'testtwo': 'emailfour@yahoo.com', 'testthree': "emailthree@yahoo.com"}
+        for i in self.EmailList.keys():
+            temp = myContact(userName=i, phoneNumber=self.PhoneList.get(i))
+            temp.save()
+
+        for x in self.EmailList.keys():
+            temp2 = myContact(userName=x, emailAddress= self.EmailList.get(x))
+            temp2.save()
+
+    def acceptanceTestGoodInput(self):
+        resp = self.myClient.post("/profile/",
+                                  {"userName": "jacksonl", "phoneNumber": 4147891234, "email": "Administrator@yahoo.com"})
+        self.assertEqual("", resp.context["errorMessage"], "Phone number and email assign successfully")
+
+    def acceptanceTestPhoneNumberUsed(self):
+        for i in self.PhoneList.keys():
+            resp = self.myClient.post("/profile/",
+                                      {"userName": self.admin.userName, "PhoneNumber": self.thingList.get(i), "EmailAddress": self.admin.emailAddress})
+            self.assertEqual("Phone Number already used", resp.context["errorMessage"],
+                             "Phone Number has been duplicated")
+
+    def acceptanceTestEmailUsed(self):
+        for x in self.EmailList.keys():
+            resp = self.myClient.post("/profile/", {"userName": self.admin.userName, "password": self.thingList.get(x), "userType": "Administrator"})
+            self.assertEqual("Email already used", resp.context["errorMessage"],
+                             "email has been duplicated ")
+
+    def acceptanceTestinvalidPhoneInput(self):
+        resp = self.myClient.post("/profile/",
+                                  {"userName": "", "password": "randomPassword", "userType": "Administrator"})
+        self.assertEqual("Incorrect Phone Input", resp.context["errorMessage"],
+                         "correct input is a ten digit number with no spaces or dashes")
+
+
+    def acceptanceTestinvalidEmailInput(self):
+        resp = self.myClient.post("/profile/",
+                                  {"userName": self.admin.userName, "Phone Number": 4145643214, "Email": "badEmailInput"})
+        self.assertEqual("Email not in correct format", resp.context["errorMessage"],
+                         "The correct format is example@website.com")
