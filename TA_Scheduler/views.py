@@ -277,39 +277,6 @@ class AssignCourseInstructor(View):
 
             errorMessage = ""
 
-            #courseNumber = request.POST["courseNumber"]
-            #if not(courseNumber.isnumeric()):
-            #    errorMessage="Invalid Course Number!"
-            #else:
-            #    existingCourseInstructor = list(
-            #    myCourseInstructor.objects.filter(courseNumber=request.POST["courseNumber"]))
-            #    existingCourse = list(myCourse.objects.filter(courseNumber=courseNumber))
-            #    existingInstructor = list(
-            #    myAccount.objects.filter(userName=request.POST["instructorUserName"], userType="Instructor"))
-            #    if((len(existingCourse) == 0) and (len(existingInstructor) == 0)):
-            #        errorMessage="Invalid Course Number And Instructor Username!"
-            #    elif((len(existingCourse) == 0)):
-            #        errorMessage="Invalid Course Number!"
-            #    elif((len(existingInstructor) == 0)):
-            #        errorMessage="Invalid Instructor Username!"
-            #    elif ((len(existingCourseInstructor) != 0)):
-            #        errorMessage="This Course Already Has An Instructor!"
-            #if(errorMessage != ""):
-            #    course_list = list(myCourse.objects.values_list("courseNumber", "courseName"))
-            #    account_list = list(myAccount.objects.values_list("userName", "userType"))
-            #    assigned_course_list = list(myCourseInstructor.objects.values_list("courseNumber", "instructorUserName"))
-            #    if (request.session["userType"] == "Administrator"):
-            #        return render(request, "assign-course-instructor.html", {"assigned_course_list": assigned_course_list, "course_list": course_list, "account_list": account_list, "errorMessage": errorMessage, "userName": userName})
-            #    else:
-            #        request.session["error"] = "Unauthorized!"
-            #        return redirect("/home/")
-            #
-            #newAssignment = myCourseInstructor(courseNumber=request.POST["courseNumber"], instructorUserName=request.POST["instructorUserName"])
-            #newAssignment.save()
-            #
-            #course = list(myCourse.objects.filter(courseNumber=request.POST["courseNumber"]))[0]
-            #course.instructorUserName = request.POST["instructorUserName"]
-            #course.save()
 
             errorMessage = assignCourseInstructor.assignCourseInstructor(request.POST["courseNumber"], request.POST["instructorUserName"])
 
